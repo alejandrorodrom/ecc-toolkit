@@ -1,6 +1,6 @@
-# ecc-toolkit
+# encloom
 
-TypeScript/JavaScript library for **secp256k1** cryptography, **AES-256-CBC**, **HMAC**, hash functions, and utilities for **bytes** and **strings**.
+**Encloom** is a TypeScript/JavaScript cryptographic toolkit with **subpath imports** and **tree-shaking**. It includes **SHA-2** and **SHA-3** (including Keccak), **HMAC**, **AES-256-CBC**, **PBKDF2**, cryptographically secure **random** bytes, **secp256k1** primitives (**ECDSA**, **ECDH**, **ECIES**), and helpers for **bytes** and **strings**.
 
 <h2 id="sec-requirements">Requirements</h2>
 
@@ -9,12 +9,12 @@ TypeScript/JavaScript library for **secp256k1** cryptography, **AES-256-CBC**, *
 <h2 id="sec-installation">Installation</h2>
 
 ```bash
-npm install ecc-toolkit
+npm install encloom
 ```
 
 <h2 id="sec-description">Overview</h2>
 
-The package exposes scoped entry points (`ecc-toolkit/<module>`). Importing from **`ecc-toolkit`** (the package root) re-exports the same public symbols. APIs predominantly use **`Uint8Array`**. For **ECDSA**, signing and verification operate on the message **digest** (e.g. SHA-256 output), not raw plaintext.
+The package exposes subpath entry points (`encloom/<module>`). Importing from **`encloom`** (the package root) re-exports the same public symbols. APIs predominantly use **`Uint8Array`**. **ECDSA** signing and verification operate on the message **digest** (for example SHA-256 output), not raw plaintext.
 
 <h2 id="sec-contents">Table of contents</h2>
 
@@ -24,18 +24,18 @@ The package exposes scoped entry points (`ecc-toolkit/<module>`). Importing from
 - [Quick reference](#sec-reference)
 - [Imports](#sec-imports)
 - [Module documentation](#sec-documentation)
-  - [`ecc-toolkit`](#sec-imports) (root; see [Imports](#sec-imports))
-  - [`ecc-toolkit/random`](#mod-ecc-toolkit-random)
-  - [`ecc-toolkit/sha2`](#mod-ecc-toolkit-sha2)
-  - [`ecc-toolkit/sha3`](#mod-ecc-toolkit-sha3)
-  - [`ecc-toolkit/hmac`](#mod-ecc-toolkit-hmac)
-  - [`ecc-toolkit/aes`](#mod-ecc-toolkit-aes)
-  - [`ecc-toolkit/ecdsa`](#mod-ecc-toolkit-ecdsa)
-  - [`ecc-toolkit/ecdh`](#mod-ecc-toolkit-ecdh)
-  - [`ecc-toolkit/ecies`](#mod-ecc-toolkit-ecies)
-  - [`ecc-toolkit/pbkdf2`](#mod-ecc-toolkit-pbkdf2)
-  - [`ecc-toolkit/constants`](#mod-ecc-toolkit-constants)
-  - [`ecc-toolkit/helpers`](#mod-ecc-toolkit-helpers)
+  - [`encloom`](#sec-imports) (root; see [Imports](#sec-imports))
+  - [`encloom/random`](#mod-encloom-random)
+  - [`encloom/sha2`](#mod-encloom-sha2)
+  - [`encloom/sha3`](#mod-encloom-sha3)
+  - [`encloom/hmac`](#mod-encloom-hmac)
+  - [`encloom/aes`](#mod-encloom-aes)
+  - [`encloom/ecdsa`](#mod-encloom-ecdsa)
+  - [`encloom/ecdh`](#mod-encloom-ecdh)
+  - [`encloom/ecies`](#mod-encloom-ecies)
+  - [`encloom/pbkdf2`](#mod-encloom-pbkdf2)
+  - [`encloom/constants`](#mod-encloom-constants)
+  - [`encloom/helpers`](#mod-encloom-helpers)
   - [`helpers/encoding`](#mod-helpers-encoding)
   - [`helpers/validators`](#mod-helpers-validators)
   - [`helpers/util`](#mod-helpers-util)
@@ -49,22 +49,22 @@ Public **exports** by import path. Types apply at TypeScript compile time only. 
 
 | Import path | Exports |
 |-------------|---------|
-| [`ecc-toolkit`](#sec-imports) | Re-exports the full public API described in the rows below. |
-| [`ecc-toolkit/random`](#mod-ecc-toolkit-random) | `randomBytes` |
-| [`ecc-toolkit/sha2`](#mod-ecc-toolkit-sha2) | `sha256`, `sha256Sync`, `sha512`, `sha512Sync`, `ripemd160`, `ripemd160Sync` |
-| [`ecc-toolkit/sha3`](#mod-ecc-toolkit-sha3) | `sha3`, `keccak256` |
-| [`ecc-toolkit/hmac`](#mod-ecc-toolkit-hmac) | `hmacSha256Sign`, `hmacSha256SignSync`, `hmacSha256Verify`, `hmacSha256VerifySync`, `hmacSha512Sign`, `hmacSha512SignSync`, `hmacSha512Verify`, `hmacSha512VerifySync` |
-| [`ecc-toolkit/aes`](#mod-ecc-toolkit-aes) | `aesCbcEncrypt`, `aesCbcDecrypt`, `aesCbcEncryptSync`, `aesCbcDecryptSync` |
-| [`ecc-toolkit/ecdsa`](#mod-ecc-toolkit-ecdsa) | `generatePrivate`, `generateKeyPair`, `getPublic`, `getPublicCompressed`, `compress`, `decompress`, `signatureExport`, `sign`, `recover`, `verify` |
-| [`ecc-toolkit/ecdh`](#mod-ecc-toolkit-ecdh) | `derive` |
-| [`ecc-toolkit/ecies`](#mod-ecc-toolkit-ecies) | `encrypt`, `decrypt`, `encryptSync`, `decryptSync`, `serialize`, `deserialize` |
-| [`ecc-toolkit/pbkdf2`](#mod-ecc-toolkit-pbkdf2) | `pbkdf2` |
-| [`ecc-toolkit/constants`](#mod-ecc-toolkit-constants) | Constant identifiers: [full list](#mod-constants-list) |
-| [`ecc-toolkit/helpers`](#mod-ecc-toolkit-helpers) | Functions from `encoding`, `validators`, `util`; types re-exported from `types` |
-| [`ecc-toolkit/helpers/encoding`](#mod-helpers-encoding) | `utf8ToBuffer`, `bufferToUtf8`, `concatBuffers`, `bufferToHex`, `hexToBuffer`, `sanitizeHex`, `removeHexLeadingZeros`, `hexToNumber` |
-| [`ecc-toolkit/helpers/validators`](#mod-helpers-validators) | `assert`, `isScalar`, `isValidPrivateKey`, `equalConstTime`, `isValidKeyLength`, `checkPrivateKey`, `checkPublicKey`, `checkMessage` |
-| [`ecc-toolkit/helpers/util`](#mod-helpers-util) | `isCompressed`, `isDecompressed`, `isPrefixed`, `sanitizePublicKey`, `exportRecoveryParam`, `importRecoveryParam`, `splitSignature`, `joinSignature`, `isValidDERSignature`, `sanitizeRSVSignature`; `SignResult` interface |
-| [`ecc-toolkit/helpers/types`](#mod-helpers-types) | Types: `Encrypted`, `PreEncryptOpts`, `KeyPair`, `Signature` |
+| [`encloom`](#sec-imports) | Re-exports the full public API described in the rows below. |
+| [`encloom/random`](#mod-encloom-random) | `randomBytes` |
+| [`encloom/sha2`](#mod-encloom-sha2) | `sha256`, `sha256Sync`, `sha512`, `sha512Sync`, `ripemd160`, `ripemd160Sync` |
+| [`encloom/sha3`](#mod-encloom-sha3) | `sha3`, `keccak256` |
+| [`encloom/hmac`](#mod-encloom-hmac) | `hmacSha256Sign`, `hmacSha256SignSync`, `hmacSha256Verify`, `hmacSha256VerifySync`, `hmacSha512Sign`, `hmacSha512SignSync`, `hmacSha512Verify`, `hmacSha512VerifySync` |
+| [`encloom/aes`](#mod-encloom-aes) | `aesCbcEncrypt`, `aesCbcDecrypt`, `aesCbcEncryptSync`, `aesCbcDecryptSync` |
+| [`encloom/ecdsa`](#mod-encloom-ecdsa) | `generatePrivate`, `generateKeyPair`, `getPublic`, `getPublicCompressed`, `compress`, `decompress`, `signatureExport`, `sign`, `recover`, `verify` |
+| [`encloom/ecdh`](#mod-encloom-ecdh) | `derive` |
+| [`encloom/ecies`](#mod-encloom-ecies) | `encrypt`, `decrypt`, `encryptSync`, `decryptSync`, `serialize`, `deserialize` |
+| [`encloom/pbkdf2`](#mod-encloom-pbkdf2) | `pbkdf2` |
+| [`encloom/constants`](#mod-encloom-constants) | Constant identifiers: [full list](#mod-constants-list) |
+| [`encloom/helpers`](#mod-encloom-helpers) | Functions from `encoding`, `validators`, `util`; types re-exported from `types` |
+| [`encloom/helpers/encoding`](#mod-helpers-encoding) | `utf8ToBuffer`, `bufferToUtf8`, `concatBuffers`, `bufferToHex`, `hexToBuffer`, `sanitizeHex`, `removeHexLeadingZeros`, `hexToNumber` |
+| [`encloom/helpers/validators`](#mod-helpers-validators) | `assert`, `isScalar`, `isValidPrivateKey`, `equalConstTime`, `isValidKeyLength`, `checkPrivateKey`, `checkPublicKey`, `checkMessage` |
+| [`encloom/helpers/util`](#mod-helpers-util) | `isCompressed`, `isDecompressed`, `isPrefixed`, `sanitizePublicKey`, `exportRecoveryParam`, `importRecoveryParam`, `splitSignature`, `joinSignature`, `isValidDERSignature`, `sanitizeRSVSignature`; `SignResult` interface |
+| [`encloom/helpers/types`](#mod-helpers-types) | Types: `Encrypted`, `PreEncryptOpts`, `KeyPair`, `Signature` |
 
 <h4 id="mod-constants-list">Exported constants</h4>
 
@@ -77,16 +77,16 @@ Public **exports** by import path. Types apply at TypeScript compile time only. 
 **ESM**
 
 ```ts
-import { sign, encrypt } from "ecc-toolkit";
-import { sha256Sync } from "ecc-toolkit/sha2";
-import { hexToBuffer } from "ecc-toolkit/helpers/encoding";
+import { sign, encrypt } from "encloom";
+import { sha256Sync } from "encloom/sha2";
+import { hexToBuffer } from "encloom/helpers/encoding";
 ```
 
 **CommonJS**
 
 ```js
-const { sign } = require("ecc-toolkit");
-const { decrypt } = require("ecc-toolkit/ecies");
+const { sign } = require("encloom");
+const { decrypt } = require("encloom/ecies");
 ```
 
 Valid import paths are those in the “Import path” column of [Quick reference](#sec-reference).
@@ -95,7 +95,7 @@ Valid import paths are those in the “Import path” column of [Quick reference
 
 <h2 id="sec-documentation">Module documentation</h2>
 
-<h3 id="mod-ecc-toolkit-random"><code>ecc-toolkit/random</code></h3>
+<h3 id="mod-encloom-random"><code>encloom/random</code></h3>
 
 **Description.** Cryptographically secure random octets.
 
@@ -106,12 +106,12 @@ Valid import paths are those in the “Import path” column of [Quick reference
 **Example**
 
 ```ts
-import { randomBytes } from "ecc-toolkit/random";
+import { randomBytes } from "encloom/random";
 
 const nonce = randomBytes(32);
 ```
 
-<h3 id="mod-ecc-toolkit-sha2"><code>ecc-toolkit/sha2</code></h3>
+<h3 id="mod-encloom-sha2"><code>encloom/sha2</code></h3>
 
 **Description.** SHA-256, SHA-512, and RIPEMD-160 digests. Each algorithm has async and sync variants.
 
@@ -124,13 +124,13 @@ const nonce = randomBytes(32);
 **Example**
 
 ```ts
-import { sha256Sync } from "ecc-toolkit/sha2";
-import { utf8ToBuffer } from "ecc-toolkit/helpers/encoding";
+import { sha256Sync } from "encloom/sha2";
+import { utf8ToBuffer } from "encloom/helpers/encoding";
 
 const digest = sha256Sync(utf8ToBuffer("hello"));
 ```
 
-<h3 id="mod-ecc-toolkit-sha3"><code>ecc-toolkit/sha3</code></h3>
+<h3 id="mod-encloom-sha3"><code>encloom/sha3</code></h3>
 
 **Description.** SHA3-256 (FIPS) and Keccak-256 digests.
 
@@ -142,12 +142,12 @@ const digest = sha256Sync(utf8ToBuffer("hello"));
 **Example**
 
 ```ts
-import { keccak256 } from "ecc-toolkit/sha3";
+import { keccak256 } from "encloom/sha3";
 
 const h = keccak256(new Uint8Array([1, 2, 3]));
 ```
 
-<h3 id="mod-ecc-toolkit-hmac"><code>ecc-toolkit/hmac</code></h3>
+<h3 id="mod-encloom-hmac"><code>encloom/hmac</code></h3>
 
 **Description.** HMAC with SHA-256 and SHA-512. The `…Verify` functions return a boolean.
 
@@ -161,13 +161,13 @@ const h = keccak256(new Uint8Array([1, 2, 3]));
 **Example**
 
 ```ts
-import { hmacSha256SignSync, hmacSha256VerifySync } from "ecc-toolkit/hmac";
+import { hmacSha256SignSync, hmacSha256VerifySync } from "encloom/hmac";
 
 const tag = hmacSha256SignSync(key, message);
 const ok = hmacSha256VerifySync(key, message, tag);
 ```
 
-<h3 id="mod-ecc-toolkit-aes"><code>ecc-toolkit/aes</code></h3>
+<h3 id="mod-encloom-aes"><code>encloom/aes</code></h3>
 
 **Description.** **AES-256-CBC** encryption and decryption with PKCS#7 padding. Key **32** octets, initialization vector **16** octets.
 
@@ -179,8 +179,8 @@ const ok = hmacSha256VerifySync(key, message, tag);
 **Example**
 
 ```ts
-import { aesCbcEncrypt, aesCbcDecrypt } from "ecc-toolkit/aes";
-import { randomBytes } from "ecc-toolkit/random";
+import { aesCbcEncrypt, aesCbcDecrypt } from "encloom/aes";
+import { randomBytes } from "encloom/random";
 
 const key = randomBytes(32);
 const iv = randomBytes(16);
@@ -188,7 +188,7 @@ const ct = await aesCbcEncrypt(iv, key, new Uint8Array([1, 2, 3]));
 const pt = await aesCbcDecrypt(iv, key, ct);
 ```
 
-<h3 id="mod-ecc-toolkit-ecdsa"><code>ecc-toolkit/ecdsa</code></h3>
+<h3 id="mod-encloom-ecdsa"><code>encloom/ecdsa</code></h3>
 
 **Description.** **ECDSA** key and signature operations on **secp256k1**. Public keys use **SEC1** encoding (compressed or uncompressed).
 
@@ -206,9 +206,9 @@ const pt = await aesCbcDecrypt(iv, key, ct);
 **Example**
 
 ```ts
-import { generateKeyPair, sign, verify } from "ecc-toolkit/ecdsa";
-import { sha256Sync } from "ecc-toolkit/sha2";
-import { utf8ToBuffer } from "ecc-toolkit/helpers/encoding";
+import { generateKeyPair, sign, verify } from "encloom/ecdsa";
+import { sha256Sync } from "encloom/sha2";
+import { utf8ToBuffer } from "encloom/helpers/encoding";
 
 const pair = generateKeyPair();
 const digest = sha256Sync(utf8ToBuffer("hello"));
@@ -217,7 +217,7 @@ const sig = sign(pair.privateKey, digest);
 verify(pair.publicKey, digest, sig);
 ```
 
-<h3 id="mod-ecc-toolkit-ecdh"><code>ecc-toolkit/ecdh</code></h3>
+<h3 id="mod-encloom-ecdh"><code>encloom/ecdh</code></h3>
 
 **Description.** **ECDH** key agreement on the configured curve.
 
@@ -228,15 +228,15 @@ verify(pair.publicKey, digest, sig);
 **Example**
 
 ```ts
-import { generateKeyPair } from "ecc-toolkit/ecdsa";
-import { derive } from "ecc-toolkit/ecdh";
+import { generateKeyPair } from "encloom/ecdsa";
+import { derive } from "encloom/ecdh";
 
 const a = generateKeyPair();
 const b = generateKeyPair();
 const shared = derive(a.privateKey, b.publicKey);
 ```
 
-<h3 id="mod-ecc-toolkit-ecies"><code>ecc-toolkit/ecies</code></h3>
+<h3 id="mod-encloom-ecies"><code>encloom/ecies</code></h3>
 
 **Description.** **ECIES** hybrid encryption: encrypt with the recipient’s public key, decrypt with their private key. Binary wire format via `serialize` / `deserialize`. Optional third argument to `encrypt` / `encryptSync` for extra fields (type **`PreEncryptOpts`**).
 
@@ -249,9 +249,9 @@ const shared = derive(a.privateKey, b.publicKey);
 **Example**
 
 ```ts
-import { generateKeyPair } from "ecc-toolkit/ecdsa";
-import { encrypt, decrypt, serialize, deserialize } from "ecc-toolkit/ecies";
-import { utf8ToBuffer, bufferToUtf8 } from "ecc-toolkit/helpers/encoding";
+import { generateKeyPair } from "encloom/ecdsa";
+import { encrypt, decrypt, serialize, deserialize } from "encloom/ecies";
+import { utf8ToBuffer, bufferToUtf8 } from "encloom/helpers/encoding";
 
 const alice = generateKeyPair();
 const msg = utf8ToBuffer("secret");
@@ -263,7 +263,7 @@ const out = await decrypt(alice.privateKey, deserialize(wire));
 bufferToUtf8(out);
 ```
 
-<h3 id="mod-ecc-toolkit-pbkdf2"><code>ecc-toolkit/pbkdf2</code></h3>
+<h3 id="mod-encloom-pbkdf2"><code>encloom/pbkdf2</code></h3>
 
 **Description.** **PBKDF2** key derivation. The exported function returns **32** octets from a password given as octets.
 
@@ -274,25 +274,25 @@ bufferToUtf8(out);
 **Example**
 
 ```ts
-import { pbkdf2 } from "ecc-toolkit/pbkdf2";
-import { utf8ToBuffer } from "ecc-toolkit/helpers/encoding";
+import { pbkdf2 } from "encloom/pbkdf2";
+import { utf8ToBuffer } from "encloom/helpers/encoding";
 
 const key = await pbkdf2(utf8ToBuffer("password"));
 ```
 
-<h3 id="mod-ecc-toolkit-constants"><code>ecc-toolkit/constants</code></h3>
+<h3 id="mod-encloom-constants"><code>encloom/constants</code></h3>
 
 **Description.** Numeric and symbolic constants (lengths, algorithm identifiers, error messages, validation limits, curve values). No exported functions. [Identifier list](#mod-constants-list).
 
 **Example**
 
 ```ts
-import { KEY_LENGTH, MAX_MSG_LENGTH } from "ecc-toolkit/constants";
+import { KEY_LENGTH, MAX_MSG_LENGTH } from "encloom/constants";
 ```
 
-<h3 id="mod-ecc-toolkit-helpers"><code>ecc-toolkit/helpers</code></h3>
+<h3 id="mod-encloom-helpers"><code>encloom/helpers</code></h3>
 
-**Description.** The **`ecc-toolkit/helpers`** entry re-exports `encoding`, `validators`, and `util`, plus types from `types`. Paths such as `helpers/encoding` narrow what you import.
+**Description.** The **`encloom/helpers`** entry re-exports `encoding`, `validators`, and `util`, plus types from `types`. Paths such as `helpers/encoding` narrow what you import.
 
 <h4 id="mod-helpers-encoding"><code>helpers/encoding</code></h4>
 
@@ -309,7 +309,7 @@ import { KEY_LENGTH, MAX_MSG_LENGTH } from "ecc-toolkit/constants";
 **Example**
 
 ```ts
-import { hexToBuffer, bufferToHex } from "ecc-toolkit/helpers/encoding";
+import { hexToBuffer, bufferToHex } from "encloom/helpers/encoding";
 
 bufferToHex(hexToBuffer("0xdead"));
 ```
@@ -328,7 +328,7 @@ bufferToHex(hexToBuffer("0xdead"));
 **Example**
 
 ```ts
-import { isValidPrivateKey } from "ecc-toolkit/helpers/validators";
+import { isValidPrivateKey } from "encloom/helpers/validators";
 
 isValidPrivateKey(secretKeyBytes);
 ```
@@ -347,7 +347,7 @@ isValidPrivateKey(secretKeyBytes);
 **Example**
 
 ```ts
-import { splitSignature } from "ecc-toolkit/helpers/util";
+import { splitSignature } from "encloom/helpers/util";
 
 const { r, s, v } = splitSignature(sig65Bytes);
 ```
@@ -359,5 +359,5 @@ const { r, s, v } = splitSignature(sig65Bytes);
 **Example**
 
 ```ts
-import type { KeyPair, Encrypted } from "ecc-toolkit/helpers/types";
+import type { KeyPair, Encrypted } from "encloom/helpers/types";
 ```

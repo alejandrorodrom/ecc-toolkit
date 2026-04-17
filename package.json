@@ -1,7 +1,7 @@
 {
-  "name": "ecc-toolkit",
+  "name": "encloom",
   "version": "0.0.1",
-  "description": "Modern secp256k1 cryptography toolkit (ECDSA, ECDH, and ECIES) with independent modules and true tree-shaking, so you only import what you use.",
+  "description": "TypeScript/JavaScript cryptographic toolkit: SHA-2 and SHA-3 (incl. Keccak), HMAC, AES-CBC, PBKDF2, secure random, and secp256k1 (ECDSA, ECDH, ECIES). Subpath exports with tree-shaking; APIs use Uint8Array.",
   "engines": {
     "node": ">=20.19.0"
   },
@@ -176,12 +176,19 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
+    "encloom",
+    "crypto",
     "ecc",
     "secp256k1",
     "ecdh",
     "ecdsa",
     "ecies",
-    "crypto"
+    "aes",
+    "hmac",
+    "pbkdf2",
+    "sha256",
+    "sha3",
+    "tree-shaking"
   ],
   "author": "Alejandro Rodriguez Romero",
   "license": "MIT",
