@@ -1,18 +1,205 @@
 {
   "name": "ecc-toolkit",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsup"
+  "version": "0.0.1",
+  "description": "Modern secp256k1 cryptography toolkit (ECDSA, ECDH, and ECIES) with independent modules and true tree-shaking, so you only import what you use.",
+  "engines": {
+    "node": ">=20.19.0"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    },
+    "./constants": {
+      "import": {
+        "types": "./dist/constants.d.mts",
+        "default": "./dist/constants.mjs"
+      },
+      "require": {
+        "types": "./dist/constants.d.ts",
+        "default": "./dist/constants.js"
+      }
+    },
+    "./helpers": {
+      "import": {
+        "types": "./dist/helpers.d.mts",
+        "default": "./dist/helpers.mjs"
+      },
+      "require": {
+        "types": "./dist/helpers.d.ts",
+        "default": "./dist/helpers.js"
+      }
+    },
+    "./helpers/encoding": {
+      "import": {
+        "types": "./dist/helpers/encoding.d.mts",
+        "default": "./dist/helpers/encoding.mjs"
+      },
+      "require": {
+        "types": "./dist/helpers/encoding.d.ts",
+        "default": "./dist/helpers/encoding.js"
+      }
+    },
+    "./helpers/validators": {
+      "import": {
+        "types": "./dist/helpers/validators.d.mts",
+        "default": "./dist/helpers/validators.mjs"
+      },
+      "require": {
+        "types": "./dist/helpers/validators.d.ts",
+        "default": "./dist/helpers/validators.js"
+      }
+    },
+    "./helpers/util": {
+      "import": {
+        "types": "./dist/helpers/util.d.mts",
+        "default": "./dist/helpers/util.mjs"
+      },
+      "require": {
+        "types": "./dist/helpers/util.d.ts",
+        "default": "./dist/helpers/util.js"
+      }
+    },
+    "./helpers/types": {
+      "import": {
+        "types": "./dist/helpers/types.d.mts",
+        "default": "./dist/helpers/types.mjs"
+      },
+      "require": {
+        "types": "./dist/helpers/types.d.ts",
+        "default": "./dist/helpers/types.js"
+      }
+    },
+    "./aes": {
+      "import": {
+        "types": "./dist/aes.d.mts",
+        "default": "./dist/aes.mjs"
+      },
+      "require": {
+        "types": "./dist/aes.d.ts",
+        "default": "./dist/aes.js"
+      }
+    },
+    "./ecdh": {
+      "import": {
+        "types": "./dist/ecdh.d.mts",
+        "default": "./dist/ecdh.mjs"
+      },
+      "require": {
+        "types": "./dist/ecdh.d.ts",
+        "default": "./dist/ecdh.js"
+      }
+    },
+    "./ecdsa": {
+      "import": {
+        "types": "./dist/ecdsa.d.mts",
+        "default": "./dist/ecdsa.mjs"
+      },
+      "require": {
+        "types": "./dist/ecdsa.d.ts",
+        "default": "./dist/ecdsa.js"
+      }
+    },
+    "./ecies": {
+      "import": {
+        "types": "./dist/ecies.d.mts",
+        "default": "./dist/ecies.mjs"
+      },
+      "require": {
+        "types": "./dist/ecies.d.ts",
+        "default": "./dist/ecies.js"
+      }
+    },
+    "./hmac": {
+      "import": {
+        "types": "./dist/hmac.d.mts",
+        "default": "./dist/hmac.mjs"
+      },
+      "require": {
+        "types": "./dist/hmac.d.ts",
+        "default": "./dist/hmac.js"
+      }
+    },
+    "./pbkdf2": {
+      "import": {
+        "types": "./dist/pbkdf2.d.mts",
+        "default": "./dist/pbkdf2.mjs"
+      },
+      "require": {
+        "types": "./dist/pbkdf2.d.ts",
+        "default": "./dist/pbkdf2.js"
+      }
+    },
+    "./random": {
+      "import": {
+        "types": "./dist/random.d.mts",
+        "default": "./dist/random.mjs"
+      },
+      "require": {
+        "types": "./dist/random.d.ts",
+        "default": "./dist/random.js"
+      }
+    },
+    "./sha2": {
+      "import": {
+        "types": "./dist/sha2.d.mts",
+        "default": "./dist/sha2.mjs"
+      },
+      "require": {
+        "types": "./dist/sha2.d.ts",
+        "default": "./dist/sha2.js"
+      }
+    },
+    "./sha3": {
+      "import": {
+        "types": "./dist/sha3.d.mts",
+        "default": "./dist/sha3.mjs"
+      },
+      "require": {
+        "types": "./dist/sha3.d.ts",
+        "default": "./dist/sha3.js"
+      }
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ecc",
+    "secp256k1",
+    "ecdh",
+    "ecdsa",
+    "ecies",
+    "crypto"
+  ],
+  "author": "Alejandro Rodriguez Romero",
+  "license": "MIT",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "devDependencies": {
+    "@types/aes-js": "^3.1.4",
+    "@types/pbkdf2": "^3.1.2",
     "tsup": "^8.5.1",
     "typescript": "^6.0.3"
+  },
+  "dependencies": {
+    "@noble/hashes": "^2.2.0",
+    "@noble/secp256k1": "^3.1.0",
+    "aes-js": "^3.1.2",
+    "pbkdf2": "^3.1.5"
   }
 }
