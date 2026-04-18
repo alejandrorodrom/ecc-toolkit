@@ -54,7 +54,7 @@ export function isValidPrivateKey(privateKey: Uint8Array): boolean {
  * @param b Second byte array.
  * @returns -1, 0, or 1 depending on comparison result.
  */
-function compareBuffers(a: Uint8Array, b: Uint8Array): number {
+export function compareBuffers(a: Uint8Array, b: Uint8Array): number {
   const len = Math.max(a.length, b.length);
   for (let i = 0; i < len; i++) {
     const av = a[i] ?? 0;

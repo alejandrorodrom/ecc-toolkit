@@ -25,6 +25,11 @@ export interface Signature {
   v: Uint8Array;
 }
 
+export interface SignResult {
+  signature: Uint8Array;
+  recovery: number;
+}
+
 export type Pbkdf2Digest =
   | typeof PBKDF2_DIGEST_SHA256
   | typeof PBKDF2_DIGEST_SHA512;

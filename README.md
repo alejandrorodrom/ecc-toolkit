@@ -1,8 +1,8 @@
 # encloom
 
-[![npm version](https://img.shields.io/npm/v/encloom.svg)](https://www.npmjs.com/package/encloom) [![npm downloads](https://img.shields.io/npm/dm/encloom.svg)](https://www.npmjs.com/package/encloom) [![minified](https://img.shields.io/bundlephobia/min/encloom?label=minified&style=flat)](https://bundlephobia.com/package/encloom) [![minified + gzip](https://img.shields.io/bundlephobia/minzip/encloom?label=minified%20%2B%20gzip&style=flat)](https://bundlephobia.com/package/encloom) [![tree shaking](https://img.shields.io/badge/tree%20shaking-supported-brightgreen?style=flat)](https://bundlephobia.com/package/encloom) [![install size](https://packagephobia.com/badge?p=encloom)](https://packagephobia.com/result?p=encloom) [![License: MIT](https://img.shields.io/npm/l/encloom.svg)](https://github.com/alejandrorodrom/encloom/blob/main/LICENSE) [![GitHub stars](https://img.shields.io/github/stars/alejandrorodrom/encloom.svg)](https://github.com/alejandrorodrom/encloom/stargazers) [![CI](https://github.com/alejandrorodrom/encloom/actions/workflows/ci.yml/badge.svg)](https://github.com/alejandrorodrom/encloom/actions/workflows/ci.yml) [![npm audit](https://github.com/alejandrorodrom/encloom/actions/workflows/npm-audit.yml/badge.svg)](https://github.com/alejandrorodrom/encloom/actions/workflows/npm-audit.yml) [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/) [![Node](https://img.shields.io/badge/node-%3E%3D20.19.0-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
+[![npm version](https://img.shields.io/npm/v/encloom.svg)](https://www.npmjs.com/package/encloom) [![npm downloads](https://img.shields.io/npm/dm/encloom.svg)](https://www.npmjs.com/package/encloom) [![minified](https://img.shields.io/bundlephobia/min/encloom?label=minified&style=flat)](https://bundlephobia.com/package/encloom) [![minified + gzip](https://img.shields.io/bundlephobia/minzip/encloom?label=minified%20%2B%20gzip&style=flat)](https://bundlephobia.com/package/encloom) [![tree shaking](https://img.shields.io/badge/tree%20shaking-supported-brightgreen?style=flat)](https://bundlephobia.com/package/encloom) [![install size](https://packagephobia.com/badge?p=encloom)](https://packagephobia.com/result?p=encloom) [![License: MIT](https://img.shields.io/npm/l/encloom.svg)](https://github.com/alejandrorodrom/encloom/blob/main/LICENSE) [![GitHub stars](https://img.shields.io/github/stars/alejandrorodrom/encloom.svg)](https://github.com/alejandrorodrom/encloom/stargazers) [![CI](https://github.com/alejandrorodrom/encloom/actions/workflows/ci.yml/badge.svg)](https://github.com/alejandrorodrom/encloom/actions/workflows/ci.yml) [![Coverage Status](https://coveralls.io/repos/github/alejandrorodrom/encloom/badge.svg?branch=main)](https://coveralls.io/github/alejandrorodrom/encloom) [![npm audit](https://github.com/alejandrorodrom/encloom/actions/workflows/npm-audit.yml/badge.svg)](https://github.com/alejandrorodrom/encloom/actions/workflows/npm-audit.yml) [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/) [![Node](https://img.shields.io/badge/node-%3E%3D20.19.0-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
 
-> TypeScript/JavaScript cryptographic toolkit: SHA-2 and SHA-3 (incl. Keccak), HMAC, AES-CBC, PBKDF2, secure random, and secp256k1 (ECDSA, ECDH, ECIES). Subpath exports with tree-shaking; APIs use Uint8Array.
+> TypeScript/JavaScript cryptographic toolkit: SHA-2 and SHA-3 (incl. Keccak), HMAC, AES-CBC, PBKDF2, secure random, and secp256k1 (ECDSA, ECDH, ECIES). **Subpath** exports with tree-shaking. Binary I/O uses **`Uint8Array`** (not Node **`Buffer`**, including helper names that say `*Buffer` for enc-utils–style compatibility).
 
 <h2 id="sec-installation">Installation</h2>
 
@@ -20,6 +20,7 @@ Subpath entry points: `encloom/<module>`. The package root **`encloom`** re-expo
 - [Overview](#sec-description)
 - [Quick reference](#sec-reference)
 - [Imports](#sec-imports)
+- [Development](#sec-development)
 - [Module documentation](#sec-documentation)
   - [`encloom`](#sec-imports) (package root)
   - [`encloom/random`](#mod-encloom-random)
@@ -34,6 +35,7 @@ Subpath entry points: `encloom/<module>`. The package root **`encloom`** re-expo
   - [`encloom/constants`](#mod-encloom-constants)
   - [`encloom/helpers`](#mod-encloom-helpers)
   - [`helpers/encoding`](#mod-helpers-encoding)
+  - [`helpers/byte-conversions`](#mod-helpers-byte-conversions)
   - [`helpers/validators`](#mod-helpers-validators)
   - [`helpers/util`](#mod-helpers-util)
   - [`helpers/types`](#mod-helpers-types)
@@ -57,15 +59,16 @@ Symbols exported per import path (types compile-time only). First column → [Mo
 | [`encloom/ecies`](#mod-encloom-ecies) | `encrypt`, `decrypt`, `encryptSync`, `decryptSync`, `serialize`, `deserialize` |
 | [`encloom/pbkdf2`](#mod-encloom-pbkdf2) | `pbkdf2` |
 | [`encloom/constants`](#mod-encloom-constants) | Constant identifiers: [full list](#mod-constants-list) |
-| [`encloom/helpers`](#mod-encloom-helpers) | `encoding`, `validators`, `util`, `types` |
+| [`encloom/helpers`](#mod-encloom-helpers) | Re-exports **`encoding`**, **byte conversions** (enc-utils–style, [list](#mod-helpers-byte-conversions)), **`validators`**, **`util`**, **`types`**. |
 | [`encloom/helpers/encoding`](#mod-helpers-encoding) | `utf8ToBuffer`, `bufferToUtf8`, `concatBuffers`, `bufferToHex`, `hexToBuffer`, `sanitizeHex`, `removeHexLeadingZeros`, `hexToNumber` |
+| [`encloom/helpers/byte-conversions`](#mod-helpers-byte-conversions) | Enc-utils–style string/byte helpers: [full list and symbol table](#mod-helpers-byte-conversions) (entire `byte-conversions` source is public) |
 | [`encloom/helpers/validators`](#mod-helpers-validators) | `assert`, `isScalar`, `isValidPrivateKey`, `equalConstTime`, `isValidKeyLength`, `checkPrivateKey`, `checkPublicKey`, `checkMessage` |
-| [`encloom/helpers/util`](#mod-helpers-util) | `isCompressed`, `isDecompressed`, `isPrefixed`, `sanitizePublicKey`, `exportRecoveryParam`, `importRecoveryParam`, `splitSignature`, `joinSignature`, `isValidDERSignature`, `sanitizeRSVSignature`; `SignResult` interface |
-| [`encloom/helpers/types`](#mod-helpers-types) | Types: `Encrypted`, `PreEncryptOpts`, `KeyPair`, `Signature`, `Pbkdf2Digest`, `Pbkdf2Options`, `Pbkdf2Result` |
+| [`encloom/helpers/util`](#mod-helpers-util) | `isCompressed`, `isDecompressed`, `isPrefixed`, `sanitizePublicKey`, `exportRecoveryParam`, `importRecoveryParam`, `splitSignature`, `joinSignature`, `isValidDERSignature`, `sanitizeRSVSignature` |
+| [`encloom/helpers/types`](#mod-helpers-types) | Types: `Encrypted`, `PreEncryptOpts`, `KeyPair`, `Signature`, `SignResult`, `Pbkdf2Digest`, `Pbkdf2Options`, `Pbkdf2Result` |
 
 <h4 id="mod-constants-list">Exported constants</h4>
 
-`HEX_ENC`, `UTF8_ENC`, `ENCRYPT_OP`, `DECRYPT_OP`, `SIGN_OP`, `VERIFY_OP`, `LENGTH_0`, `LENGTH_1`, `LENGTH_16`, `LENGTH_32`, `LENGTH_64`, `LENGTH_128`, `LENGTH_256`, `LENGTH_512`, `LENGTH_1024`, `AES_LENGTH`, `HMAC_LENGTH`, `AES_BROWSER_ALGO`, `HMAC_BROWSER_ALGO`, `HMAC_BROWSER`, `SHA256_BROWSER_ALGO`, `SHA512_BROWSER_ALGO`, `AES_NODE_ALGO`, `HMAC_NODE_ALGO`, `SHA256_NODE_ALGO`, `SHA512_NODE_ALGO`, `RIPEMD160_NODE_ALGO`, `PBKDF2_DIGEST_SHA256`, `PBKDF2_DIGEST_SHA512`, `PREFIX_LENGTH`, `KEY_LENGTH`, `IV_LENGTH`, `MAC_LENGTH`, `DECOMPRESSED_LENGTH`, `PREFIXED_KEY_LENGTH`, `PREFIXED_DECOMPRESSED_LENGTH`, `ECIES_SERIALIZED_MIN_LENGTH`, `MAX_KEY_LENGTH`, `MAX_MSG_LENGTH`, `PBKDF2_DEFAULT_ITERATIONS`, `EMPTY_BUFFER`, `EC_GROUP_ORDER`, `ZERO32`, `ERROR_BAD_MAC`, `ERROR_BAD_SIGNATURE`, `ERROR_BAD_PRIVATE_KEY`, `ERROR_BAD_PUBLIC_KEY`, `ERROR_BAD_EPHEM_PRIVATE_KEY`, `ERROR_ECIES_SERIALIZED_LENGTH`, `ERROR_AES_IV_LENGTH`, `ERROR_AES_KEY_LENGTH`, `ERROR_EMPTY_MESSAGE`, `ERROR_MESSAGE_TOO_LONG`
+`HEX_ENC`, `UTF8_ENC`, `BINARY_ENC`, `ENCRYPT_OP`, `DECRYPT_OP`, `SIGN_OP`, `VERIFY_OP`, `LENGTH_0`, `LENGTH_1`, `LENGTH_16`, `LENGTH_32`, `LENGTH_64`, `LENGTH_128`, `LENGTH_256`, `LENGTH_512`, `LENGTH_1024`, `AES_LENGTH`, `HMAC_LENGTH`, `AES_BROWSER_ALGO`, `HMAC_BROWSER_ALGO`, `HMAC_BROWSER`, `SHA256_BROWSER_ALGO`, `SHA512_BROWSER_ALGO`, `AES_NODE_ALGO`, `HMAC_NODE_ALGO`, `SHA256_NODE_ALGO`, `SHA512_NODE_ALGO`, `RIPEMD160_NODE_ALGO`, `PBKDF2_DIGEST_SHA256`, `PBKDF2_DIGEST_SHA512`, `PREFIX_LENGTH`, `KEY_LENGTH`, `IV_LENGTH`, `MAC_LENGTH`, `DECOMPRESSED_LENGTH`, `PREFIXED_KEY_LENGTH`, `PREFIXED_DECOMPRESSED_LENGTH`, `ECIES_SERIALIZED_MIN_LENGTH`, `MAX_KEY_LENGTH`, `MAX_MSG_LENGTH`, `PBKDF2_DEFAULT_ITERATIONS`, `EMPTY_BUFFER`, `EC_GROUP_ORDER`, `ZERO32`, `ERROR_BAD_MAC`, `ERROR_BAD_SIGNATURE`, `ERROR_BAD_PRIVATE_KEY`, `ERROR_BAD_PUBLIC_KEY`, `ERROR_BAD_EPHEM_PRIVATE_KEY`, `ERROR_ECIES_SERIALIZED_LENGTH`, `ERROR_AES_IV_LENGTH`, `ERROR_AES_KEY_LENGTH`, `ERROR_EMPTY_MESSAGE`, `ERROR_MESSAGE_TOO_LONG`
 
 ---
 
@@ -77,6 +80,7 @@ Symbols exported per import path (types compile-time only). First column → [Mo
 import { sign, encrypt } from "encloom";
 import { sha256Sync } from "encloom/sha2";
 import { hexToBuffer } from "encloom/helpers/encoding";
+import { arrayToHex } from "encloom/helpers/byte-conversions";
 ```
 
 **CommonJS**
@@ -87,6 +91,19 @@ const { decrypt } = require("encloom/ecies");
 ```
 
 Allowed paths match the “Import path” column in [Quick reference](#sec-reference).
+
+---
+
+<h2 id="sec-development">Development</h2>
+
+| Command | Purpose |
+|---------|---------|
+| `npm run lint` | ESLint |
+| `npm test` | Unit tests (Vitest) |
+| `npm run test:coverage` | Tests + V8 coverage (`coverage/lcov.info`; used in CI for [Coveralls](https://coveralls.io/github/alejandrorodrom/encloom)) |
+| `npm run build` | Bundles `dist/` (ESM + CJS) and declaration files |
+
+Maintainer-only (not part of the published package API): see **`package.json`** for local scripts; `scripts/build.mjs` is the bundler for `dist/` and is not part of the published install.
 
 ---
 
@@ -294,7 +311,7 @@ import { KEY_LENGTH, MAX_MSG_LENGTH } from "encloom/constants";
 
 <h3 id="mod-encloom-helpers"><code>encloom/helpers</code></h3>
 
-**Description.** Re-exports `encoding`, `validators`, `util`, and `types`. Subpaths (`helpers/encoding`, etc.) limit the import surface.
+**Description.** Re-exports **`encoding`**, **byte conversions** ([`helpers/byte-conversions`](#mod-helpers-byte-conversions)), **`validators`**, **`util`**, and **`types`**. Subpaths limit the import surface; you can import byte helpers from **`encloom`**, **`encloom/helpers`**, or **`encloom/helpers/byte-conversions`**.
 
 <h4 id="mod-helpers-encoding"><code>helpers/encoding</code></h4>
 
@@ -314,6 +331,48 @@ import { KEY_LENGTH, MAX_MSG_LENGTH } from "encloom/constants";
 import { hexToBuffer, bufferToHex } from "encloom/helpers/encoding";
 
 bufferToHex(hexToBuffer("0xdead"));
+```
+
+<h4 id="mod-helpers-byte-conversions"><code>helpers/byte-conversions</code></h4>
+
+**Description.** Helpers aligned with the **enc-utils** API surface (familiar string and byte names in many web3 and browser toolchains). **All** functions in the source file are public: you can use **low-level** string/binary layout (`calcByteLength`, `splitBytes`, …) or the **high-level** shorthands (`binaryToArray`, `numberToArray`, …). All binary results use **`Uint8Array`** where applicable (`arrayToBuffer`, `numberToBuffer`, etc.).
+
+| Symbol | Role |
+|--------|------|
+| `calcByteLength` | Rounds a **length** (e.g. of a bit string) up to the next multiple of `byteSize` (default 8) |
+| `padString` | Pads a string on the **left** or **right** (building block for `padLeft` / `padRight`) |
+| `padLeft`, `padRight` | String padding to a target length (no truncation) |
+| `sanitizeBytes` | Left-pads a `0`/`1` string so its length is a multiple of 8 (or of `byteSize`); used by `numberToBinary` |
+| `splitBytes` | Splits a sanitized `0`/`1` string into 8-bit (or `byteSize`) **chunks**; base for `binaryToArray` |
+| `binaryToArray` | `0`/`1` string → `Uint8Array` (enc-utils layout) |
+| `numberToBinary` | `num >>> 0` as minimal base-2, then `sanitizeBytes` to full byte groups; used by `numberToArray` |
+| `isBinaryString`, `isHexString` | `isBinaryString` tests `0`/`1` and length `≡ 0 (mod 8)`; `isHexString` **requires** a lowercase `0x` prefix (enc-utils rule) |
+| `isBuffer`, `isTypedArray`, `isArrayBuffer` | Type / value checks (see JSDoc) |
+| `getType`, `getEncoding`, `EncLikeType` | Value classification and string “encoding” guess |
+| `addHexPrefix`, `removeHexPrefix` | Hex prefix helpers |
+| `bufferToArray`, `bufferToNumber` | `Uint8Array` copy and big-endian unsigned integer |
+| `arrayToBuffer`, `arrayToHex`, `arrayToUtf8`, `arrayToNumber` | Array / hex / UTF-8 / number conversions |
+| `hexToArray`, `hexToUtf8` | Hex decoding (see `hexToBuffer` for validation rules) |
+| `utf8ToArray`, `utf8ToHex`, `utf8ToNumber` | UTF-8 string conversions |
+| `numberToArray`, `numberToBuffer`, `numberToHex`, `numberToUtf8` | uint32-style byte layout and string forms (see JSDoc) |
+| `trimLeft`, `trimRight` | Trim byte sequences to a target length |
+
+**Example**
+
+```ts
+import {
+  arrayToHex,
+  binaryToArray,
+  getEncoding,
+  numberToBinary,
+  utf8ToArray,
+} from "encloom/helpers/byte-conversions";
+
+arrayToHex(utf8ToArray("hi"), true); // "0x6869"
+getEncoding("0x00ff"); // "hex"
+getEncoding("00001111"); // "binary" (multiples of eight `0`/`1`)
+binaryToArray("00001111"); // Uint8Array(1) => [0x0f]
+numberToBinary(256); // padded 0/1 string used inside numberToArray
 ```
 
 <h4 id="mod-helpers-validators"><code>helpers/validators</code></h4>

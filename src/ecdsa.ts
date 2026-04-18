@@ -41,10 +41,7 @@ export function compress(publicKey: Uint8Array): Uint8Array {
     checkPublicKey(publicKey);
     return publicKey;
   }
-  if (
-    publicKey.length === PREFIXED_KEY_LENGTH ||
-    publicKey.length === PREFIXED_DECOMPRESSED_LENGTH
-  ) {
+  if (publicKey.length === PREFIXED_DECOMPRESSED_LENGTH) {
     checkPublicKey(publicKey);
   }
   return secp.Point.fromBytes(publicKey).toBytes(true);
@@ -62,10 +59,7 @@ export function decompress(publicKey: Uint8Array): Uint8Array {
     }
     return publicKey;
   }
-  if (
-    publicKey.length === PREFIXED_KEY_LENGTH ||
-    publicKey.length === PREFIXED_DECOMPRESSED_LENGTH
-  ) {
+  if (publicKey.length === PREFIXED_KEY_LENGTH) {
     checkPublicKey(publicKey);
   }
   return secp.Point.fromBytes(publicKey).toBytes(false);

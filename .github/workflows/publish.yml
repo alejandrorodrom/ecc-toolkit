@@ -12,6 +12,7 @@ on:
 permissions:
   contents: write
   id-token: write
+  checks: write
 
 concurrency:
   group: npm-publish-${{ github.repository }}
@@ -39,6 +40,15 @@ jobs:
 
       - name: Lint
         run: npm run lint
+
+      - name: Unit tests
+        run: npm run test:coverage
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          file: coverage/lcov.info
 
       - name: Build
         run: npm run build --if-present

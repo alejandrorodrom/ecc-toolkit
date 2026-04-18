@@ -108,7 +108,7 @@ function pad32(b: Uint8Array): Uint8Array {
  * @param len Length value to encode.
  * @returns Length bytes only (no tag).
  */
-function encodeDerDefiniteLength(len: number): Uint8Array {
+export function encodeDerDefiniteLength(len: number): Uint8Array {
   if (len < 0x80) {
     return new Uint8Array([len]);
   }
@@ -147,15 +147,12 @@ export function derEncodeEcdsaSignature(rs: Uint8Array): Uint8Array {
  * @param bytes Raw 32-byte limb (may include leading zeros).
  * @returns Tag 0x02, length octet(s), and value bytes.
  */
-function encodeInteger(bytes: Uint8Array): Uint8Array {
+export function encodeInteger(bytes: Uint8Array): Uint8Array {
   let b = stripLeadingZeros(bytes);
   if (b.length === 0) {
     b = new Uint8Array([0]);
   }
-  const hi = b.at(0);
-  if (hi === undefined) {
-    throw new Error("Invalid DER INTEGER");
-  }
+  const hi = b[0];
   if (hi & 0x80) {
     b = concatBuffers(new Uint8Array([0]), b);
   }

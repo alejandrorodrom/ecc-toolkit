@@ -21,6 +21,7 @@ const ENTRIES = {
   sha3: "src/sha3.ts",
   helpers: "src/helpers/index.ts",
   "helpers/encoding": "src/helpers/encoding.ts",
+  "helpers/byte-conversions": "src/helpers/byte-conversions.ts",
   "helpers/validators": "src/helpers/validators.ts",
   "helpers/util": "src/helpers/util.ts",
   "helpers/types": "src/helpers/types.ts",

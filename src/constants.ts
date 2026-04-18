@@ -1,5 +1,6 @@
 export const HEX_ENC = "hex";
 export const UTF8_ENC = "utf8";
+export const BINARY_ENC = "binary";
 
 export const ENCRYPT_OP = "encrypt";
 export const DECRYPT_OP = "decrypt";
@@ -78,7 +79,8 @@ export const ERROR_BAD_EPHEM_PRIVATE_KEY = "Invalid ephemeral private key";
 export const ERROR_AES_IV_LENGTH = "AES-CBC: IV must be 16 bytes";
 export const ERROR_AES_KEY_LENGTH = "AES-CBC: key must be 32 bytes";
 
-function hexToBytes(hex: string): number[] {
+/** Parses hex digits to byte values; an odd-length string is treated as if it had a leading `0`. */
+export function hexToBytes(hex: string): number[] {
   const clean = hex.length % 2 ? `0${hex}` : hex;
   const out: number[] = [];
   for (let i = 0; i < clean.length; i += 2) {

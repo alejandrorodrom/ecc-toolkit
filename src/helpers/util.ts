@@ -4,7 +4,7 @@ import {
   PREFIXED_DECOMPRESSED_LENGTH,
   PREFIXED_KEY_LENGTH,
 } from "../constants";
-import type { Signature } from "./types";
+import type { Signature, SignResult } from "./types";
 import {
   bufferToHex,
   concatBuffers,
@@ -107,11 +107,6 @@ export function joinSignature(sig: Signature): Uint8Array {
  */
 export function isValidDERSignature(sig: Uint8Array): boolean {
   return sig.length > 65 && sig[0] === 0x30;
-}
-
-export interface SignResult {
-  signature: Uint8Array;
-  recovery: number;
 }
 
 /**

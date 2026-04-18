@@ -50,6 +50,16 @@
         "default": "./dist/helpers/encoding.js"
       }
     },
+    "./helpers/byte-conversions": {
+      "import": {
+        "types": "./dist/helpers/byte-conversions.d.mts",
+        "default": "./dist/helpers/byte-conversions.mjs"
+      },
+      "require": {
+        "types": "./dist/helpers/byte-conversions.d.ts",
+        "default": "./dist/helpers/byte-conversions.js"
+      }
+    },
     "./helpers/validators": {
       "import": {
         "types": "./dist/helpers/validators.d.mts",
@@ -176,7 +186,9 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prepack": "npm run build",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest",
     "prepare": "husky"
   },
   "keywords": [
@@ -216,12 +228,14 @@
     "@eslint/js": "^10.0.1",
     "@types/aes-js": "^3.1.4",
     "@types/pbkdf2": "^3.1.2",
+    "@vitest/coverage-v8": "^4.1.4",
     "esbuild": "^0.25.0",
     "eslint": "^10.2.1",
     "globals": "^17.5.0",
     "husky": "^9.1.7",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.58.2"
+    "typescript-eslint": "^8.58.2",
+    "vitest": "^4.1.4"
   },
   "dependencies": {
     "@noble/hashes": "^2.2.0",
