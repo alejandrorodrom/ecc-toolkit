@@ -50,7 +50,7 @@ function readAsn1Length(
   }
   let len = 0;
   for (let i = payloadStart; i < nextAfterPayload; i++) {
-    len = (len << 8) | der[i]!;
+    len = (len << 8) | der[i];
   }
   return { value: len, next: nextAfterPayload };
 }

@@ -51,9 +51,13 @@ export async function pbkdf2(
       KEY_LENGTH,
       digestNode,
       (err: Error | null, derived?: Buffer) => {
-        if (err) return reject(err);
+        if (err) {
+          reject(err);
+          return;
+        }
         if (derived === undefined) {
-          return reject(new Error("PBKDF2: no derived key"));
+          reject(new Error("PBKDF2: no derived key"));
+          return;
         }
         resolve({
           key: new Uint8Array(derived),
