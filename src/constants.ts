@@ -34,6 +34,9 @@ export const SHA256_NODE_ALGO = "sha256";
 export const SHA512_NODE_ALGO = "sha512";
 export const RIPEMD160_NODE_ALGO = "ripemd160";
 
+export const PBKDF2_DIGEST_SHA256 = SHA256_NODE_ALGO;
+export const PBKDF2_DIGEST_SHA512 = SHA512_NODE_ALGO;
+
 export const PREFIX_LENGTH = LENGTH_1;
 export const KEY_LENGTH = LENGTH_32;
 export const IV_LENGTH = LENGTH_16;
@@ -44,10 +47,7 @@ export const PREFIXED_KEY_LENGTH = KEY_LENGTH + PREFIX_LENGTH;
 export const PREFIXED_DECOMPRESSED_LENGTH = DECOMPRESSED_LENGTH + PREFIX_LENGTH;
 
 export const MAX_KEY_LENGTH = LENGTH_1024;
-/**
- * Maximum message length accepted by ECDSA validation paths.
- * @type {number}
- */
+export const PBKDF2_DEFAULT_ITERATIONS = 210_000;
 export const MAX_MSG_LENGTH = LENGTH_32;
 
 export const EMPTY_BUFFER = new Uint8Array(LENGTH_0);
@@ -67,11 +67,11 @@ export const ERROR_BAD_PUBLIC_KEY = "Bad public key";
 export const ERROR_EMPTY_MESSAGE = "Message should not be empty";
 export const ERROR_MESSAGE_TOO_LONG = "Message is too long";
 
-/**
- * Converts a hex string into a byte array.
- * @param hex Hex string.
- * @returns Byte values as number array.
- */
+export const ERROR_BAD_EPHEM_PRIVATE_KEY = "Invalid ephemeral private key";
+
+export const ERROR_AES_IV_LENGTH = "AES-CBC: IV must be 16 bytes";
+export const ERROR_AES_KEY_LENGTH = "AES-CBC: key must be 32 bytes";
+
 function hexToBytes(hex: string): number[] {
   const clean = hex.length % 2 ? `0${hex}` : hex;
   const out: number[] = [];

@@ -1,6 +1,21 @@
 import * as aesJs from "aes-js";
+import {
+  ERROR_AES_IV_LENGTH,
+  ERROR_AES_KEY_LENGTH,
+  IV_LENGTH,
+  KEY_LENGTH,
+} from "./constants";
 
 const { ModeOfOperation } = aesJs;
+
+function assertAesLengths(iv: Uint8Array, key: Uint8Array): void {
+  if (iv.length !== IV_LENGTH) {
+    throw new Error(ERROR_AES_IV_LENGTH);
+  }
+  if (key.length !== KEY_LENGTH) {
+    throw new Error(ERROR_AES_KEY_LENGTH);
+  }
+}
 
 /**
  * Encrypts data using AES-256-CBC.
@@ -44,7 +59,8 @@ export function aesCbcEncryptSync(
   key: Uint8Array,
   data: Uint8Array
 ): Uint8Array {
-  const padded = pkcs7Pad(data, 16);
+  assertAesLengths(iv, key);
+  const padded = pkcs7Pad(data, IV_LENGTH);
   const cbc = new ModeOfOperation.cbc(
     Array.from(key),
     Array.from(iv)
@@ -64,12 +80,13 @@ export function aesCbcDecryptSync(
   key: Uint8Array,
   data: Uint8Array
 ): Uint8Array {
+  assertAesLengths(iv, key);
   const cbc = new ModeOfOperation.cbc(
     Array.from(key),
     Array.from(iv)
   );
   const decrypted = new Uint8Array(cbc.decrypt(Array.from(data)));
-  return pkcs7Unpad(decrypted);
+  return pkcs7Unpad(decrypted, IV_LENGTH);
 }
 
 /**
@@ -92,12 +109,12 @@ function pkcs7Pad(data: Uint8Array, blockSize: number): Uint8Array {
  * @returns Unpadded byte array.
  * @throws Error if padding is invalid.
  */
-function pkcs7Unpad(data: Uint8Array): Uint8Array {
+function pkcs7Unpad(data: Uint8Array, blockSize: number): Uint8Array {
   if (data.length === 0) {
     throw new Error("PKCS#7: empty data");
   }
   const pad = data[data.length - 1]!;
-  if (pad < 1 || pad > 16 || pad > data.length) {
+  if (pad < 1 || pad > blockSize || pad > data.length) {
     throw new Error("PKCS#7: invalid padding");
   }
   for (let i = data.length - pad; i < data.length; i++) {

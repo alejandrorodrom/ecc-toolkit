@@ -12,7 +12,7 @@ npm install encloom
 
 <h2 id="sec-description">Overview</h2>
 
-The package exposes subpath entry points (`encloom/<module>`). Importing from **`encloom`** (the package root) re-exports the same public symbols. APIs predominantly use **`Uint8Array`**. **ECDSA** signing and verification operate on the message **digest** (for example SHA-256 output), not raw plaintext.
+Subpath entry points: `encloom/<module>`. The package root **`encloom`** re-exports the same symbols. Parameters and results use **`Uint8Array`**. **ECDSA** `sign` / `verify` expect a **message digest** (e.g. SHA-256 output), not raw plaintext.
 
 <h2 id="sec-contents">Table of contents</h2>
 
@@ -21,7 +21,7 @@ The package exposes subpath entry points (`encloom/<module>`). Importing from **
 - [Quick reference](#sec-reference)
 - [Imports](#sec-imports)
 - [Module documentation](#sec-documentation)
-  - [`encloom`](#sec-imports) (root; see [Imports](#sec-imports))
+  - [`encloom`](#sec-imports) (package root)
   - [`encloom/random`](#mod-encloom-random)
   - [`encloom/sha2`](#mod-encloom-sha2)
   - [`encloom/sha3`](#mod-encloom-sha3)
@@ -42,11 +42,11 @@ The package exposes subpath entry points (`encloom/<module>`). Importing from **
 
 <h2 id="sec-reference">Quick reference</h2>
 
-Public **exports** by import path. Types apply at TypeScript compile time only. The first column links to the matching section under [Module documentation](#sec-documentation).
+Symbols exported per import path (types compile-time only). First column → [Module documentation](#sec-documentation).
 
 | Import path | Exports |
 |-------------|---------|
-| [`encloom`](#sec-imports) | Re-exports the full public API described in the rows below. |
+| [`encloom`](#sec-imports) | Full public API (aggregate of subpaths). |
 | [`encloom/random`](#mod-encloom-random) | `randomBytes` |
 | [`encloom/sha2`](#mod-encloom-sha2) | `sha256`, `sha256Sync`, `sha512`, `sha512Sync`, `ripemd160`, `ripemd160Sync` |
 | [`encloom/sha3`](#mod-encloom-sha3) | `sha3`, `keccak256` |
@@ -57,15 +57,15 @@ Public **exports** by import path. Types apply at TypeScript compile time only. 
 | [`encloom/ecies`](#mod-encloom-ecies) | `encrypt`, `decrypt`, `encryptSync`, `decryptSync`, `serialize`, `deserialize` |
 | [`encloom/pbkdf2`](#mod-encloom-pbkdf2) | `pbkdf2` |
 | [`encloom/constants`](#mod-encloom-constants) | Constant identifiers: [full list](#mod-constants-list) |
-| [`encloom/helpers`](#mod-encloom-helpers) | Functions from `encoding`, `validators`, `util`; types re-exported from `types` |
+| [`encloom/helpers`](#mod-encloom-helpers) | `encoding`, `validators`, `util`, `types` |
 | [`encloom/helpers/encoding`](#mod-helpers-encoding) | `utf8ToBuffer`, `bufferToUtf8`, `concatBuffers`, `bufferToHex`, `hexToBuffer`, `sanitizeHex`, `removeHexLeadingZeros`, `hexToNumber` |
 | [`encloom/helpers/validators`](#mod-helpers-validators) | `assert`, `isScalar`, `isValidPrivateKey`, `equalConstTime`, `isValidKeyLength`, `checkPrivateKey`, `checkPublicKey`, `checkMessage` |
 | [`encloom/helpers/util`](#mod-helpers-util) | `isCompressed`, `isDecompressed`, `isPrefixed`, `sanitizePublicKey`, `exportRecoveryParam`, `importRecoveryParam`, `splitSignature`, `joinSignature`, `isValidDERSignature`, `sanitizeRSVSignature`; `SignResult` interface |
-| [`encloom/helpers/types`](#mod-helpers-types) | Types: `Encrypted`, `PreEncryptOpts`, `KeyPair`, `Signature` |
+| [`encloom/helpers/types`](#mod-helpers-types) | Types: `Encrypted`, `PreEncryptOpts`, `KeyPair`, `Signature`, `Pbkdf2Digest`, `Pbkdf2Options`, `Pbkdf2Result` |
 
 <h4 id="mod-constants-list">Exported constants</h4>
 
-`HEX_ENC`, `UTF8_ENC`, `ENCRYPT_OP`, `DECRYPT_OP`, `SIGN_OP`, `VERIFY_OP`, `LENGTH_0`, `LENGTH_1`, `LENGTH_16`, `LENGTH_32`, `LENGTH_64`, `LENGTH_128`, `LENGTH_256`, `LENGTH_512`, `LENGTH_1024`, `AES_LENGTH`, `HMAC_LENGTH`, `AES_BROWSER_ALGO`, `HMAC_BROWSER_ALGO`, `HMAC_BROWSER`, `SHA256_BROWSER_ALGO`, `SHA512_BROWSER_ALGO`, `AES_NODE_ALGO`, `HMAC_NODE_ALGO`, `SHA256_NODE_ALGO`, `SHA512_NODE_ALGO`, `RIPEMD160_NODE_ALGO`, `PREFIX_LENGTH`, `KEY_LENGTH`, `IV_LENGTH`, `MAC_LENGTH`, `DECOMPRESSED_LENGTH`, `PREFIXED_KEY_LENGTH`, `PREFIXED_DECOMPRESSED_LENGTH`, `MAX_KEY_LENGTH`, `MAX_MSG_LENGTH`, `EMPTY_BUFFER`, `EC_GROUP_ORDER`, `ZERO32`, `ERROR_BAD_MAC`, `ERROR_BAD_PRIVATE_KEY`, `ERROR_BAD_PUBLIC_KEY`, `ERROR_EMPTY_MESSAGE`, `ERROR_MESSAGE_TOO_LONG`
+`HEX_ENC`, `UTF8_ENC`, `ENCRYPT_OP`, `DECRYPT_OP`, `SIGN_OP`, `VERIFY_OP`, `LENGTH_0`, `LENGTH_1`, `LENGTH_16`, `LENGTH_32`, `LENGTH_64`, `LENGTH_128`, `LENGTH_256`, `LENGTH_512`, `LENGTH_1024`, `AES_LENGTH`, `HMAC_LENGTH`, `AES_BROWSER_ALGO`, `HMAC_BROWSER_ALGO`, `HMAC_BROWSER`, `SHA256_BROWSER_ALGO`, `SHA512_BROWSER_ALGO`, `AES_NODE_ALGO`, `HMAC_NODE_ALGO`, `SHA256_NODE_ALGO`, `SHA512_NODE_ALGO`, `RIPEMD160_NODE_ALGO`, `PBKDF2_DIGEST_SHA256`, `PBKDF2_DIGEST_SHA512`, `PREFIX_LENGTH`, `KEY_LENGTH`, `IV_LENGTH`, `MAC_LENGTH`, `DECOMPRESSED_LENGTH`, `PREFIXED_KEY_LENGTH`, `PREFIXED_DECOMPRESSED_LENGTH`, `MAX_KEY_LENGTH`, `MAX_MSG_LENGTH`, `PBKDF2_DEFAULT_ITERATIONS`, `EMPTY_BUFFER`, `EC_GROUP_ORDER`, `ZERO32`, `ERROR_BAD_MAC`, `ERROR_BAD_PRIVATE_KEY`, `ERROR_BAD_PUBLIC_KEY`, `ERROR_BAD_EPHEM_PRIVATE_KEY`, `ERROR_AES_IV_LENGTH`, `ERROR_AES_KEY_LENGTH`, `ERROR_EMPTY_MESSAGE`, `ERROR_MESSAGE_TOO_LONG`
 
 ---
 
@@ -86,7 +86,7 @@ const { sign } = require("encloom");
 const { decrypt } = require("encloom/ecies");
 ```
 
-Valid import paths are those in the “Import path” column of [Quick reference](#sec-reference).
+Allowed paths match the “Import path” column in [Quick reference](#sec-reference).
 
 ---
 
@@ -146,7 +146,7 @@ const h = keccak256(new Uint8Array([1, 2, 3]));
 
 <h3 id="mod-encloom-hmac"><code>encloom/hmac</code></h3>
 
-**Description.** HMAC with SHA-256 and SHA-512. The `…Verify` functions return a boolean.
+**Description.** HMAC-SHA-256 and HMAC-SHA-512. `…Verify` / `…VerifySync` return `boolean`.
 
 | Function | Input | Output |
 |----------|-------|--------|
@@ -196,7 +196,7 @@ const pt = await aesCbcDecrypt(iv, key, ct);
 | `getPublic` / `getPublicCompressed` | Public key derived from private key. |
 | `compress` / `decompress` | SEC1 format conversion. |
 | `sign` | Sign digest; optional third argument `rsvSig` (default `false`: 64 octets; `true`: 65 octets). |
-| `verify` | Verification; success → `null`, failure → throws. |
+| `verify` | Valid signature: `void`; invalid: throws. |
 | `recover` | Recover public key from 65-octet signature and digest. |
 | `signatureExport` | Convert compact or recovered signature to DER encoding. |
 
@@ -216,7 +216,7 @@ verify(pair.publicKey, digest, sig);
 
 <h3 id="mod-encloom-ecdh"><code>encloom/ecdh</code></h3>
 
-**Description.** **ECDH** key agreement on the configured curve.
+**Description.** **ECDH** on secp256k1 (32-octet shared secret).
 
 | Function | Input | Output |
 |----------|-------|--------|
@@ -235,13 +235,13 @@ const shared = derive(a.privateKey, b.publicKey);
 
 <h3 id="mod-encloom-ecies"><code>encloom/ecies</code></h3>
 
-**Description.** **ECIES** hybrid encryption: encrypt with the recipient’s public key, decrypt with their private key. Binary wire format via `serialize` / `deserialize`. Optional third argument to `encrypt` / `encryptSync` for extra fields (type **`PreEncryptOpts`**).
+**Description.** **ECIES** on secp256k1: encrypt to recipient public key; decrypt with private key. Wire format: `serialize` / `deserialize`. `encrypt` / `encryptSync` accept optional `Partial<PreEncryptOpts>` (`iv`, `ephemPrivateKey`, etc.).
 
 | Function | Summary |
 |----------|---------|
-| `encrypt` / `decrypt` | Async variants. |
-| `encryptSync` / `decryptSync` | Sync-primitive variants; call `decryptSync` with `await` as well. |
-| `serialize` / `deserialize` | Logical structure ↔ octet sequence. |
+| `encrypt` / `decrypt` | Async. |
+| `encryptSync` / `decryptSync` | Sync (`Uint8Array`, not `Promise`). |
+| `serialize` / `deserialize` | Object ↔ bytes. |
 
 **Example**
 
@@ -262,11 +262,11 @@ bufferToUtf8(out);
 
 <h3 id="mod-encloom-pbkdf2"><code>encloom/pbkdf2</code></h3>
 
-**Description.** **PBKDF2** key derivation. The exported function returns **32** octets from a password given as octets.
+**Description.** **PBKDF2** (HMAC-SHA-256 or HMAC-SHA-512). Output: 32-octet `key`, `salt`, `iterations`, `digest`. Random 16-octet salt and `PBKDF2_DEFAULT_ITERATIONS` unless overridden in `Pbkdf2Options`.
 
 | Function | Input | Output |
 |----------|-------|--------|
-| `pbkdf2` | `password: Uint8Array` | `Promise<Uint8Array>` (32 octets) |
+| `pbkdf2` | `password`, optional `Pbkdf2Options` | `Promise<Pbkdf2Result>` |
 
 **Example**
 
@@ -274,12 +274,17 @@ bufferToUtf8(out);
 import { pbkdf2 } from "encloom/pbkdf2";
 import { utf8ToBuffer } from "encloom/helpers/encoding";
 
-const key = await pbkdf2(utf8ToBuffer("password"));
+const first = await pbkdf2(utf8ToBuffer("password"));
+const again = await pbkdf2(utf8ToBuffer("password"), {
+  salt: first.salt,
+  iterations: first.iterations,
+  digest: first.digest,
+});
 ```
 
 <h3 id="mod-encloom-constants"><code>encloom/constants</code></h3>
 
-**Description.** Numeric and symbolic constants (lengths, algorithm identifiers, error messages, validation limits, curve values). No exported functions. [Identifier list](#mod-constants-list).
+**Description.** Lengths, algorithm names, errors, curve data. No functions. [List](#mod-constants-list).
 
 **Example**
 
@@ -289,7 +294,7 @@ import { KEY_LENGTH, MAX_MSG_LENGTH } from "encloom/constants";
 
 <h3 id="mod-encloom-helpers"><code>encloom/helpers</code></h3>
 
-**Description.** The **`encloom/helpers`** entry re-exports `encoding`, `validators`, and `util`, plus types from `types`. Paths such as `helpers/encoding` narrow what you import.
+**Description.** Re-exports `encoding`, `validators`, `util`, and `types`. Subpaths (`helpers/encoding`, etc.) limit the import surface.
 
 <h4 id="mod-helpers-encoding"><code>helpers/encoding</code></h4>
 
@@ -351,10 +356,10 @@ const { r, s, v } = splitSignature(sig65Bytes);
 
 <h4 id="mod-helpers-types"><code>helpers/types</code></h4>
 
-**Description.** TypeScript-only definitions: **`Encrypted`**, **`PreEncryptOpts`**, **`KeyPair`**, **`Signature`**.
+**Description.** Type-only module: `Encrypted`, `PreEncryptOpts`, `KeyPair`, `Signature`, `Pbkdf2Digest`, `Pbkdf2Options`, `Pbkdf2Result`.
 
 **Example**
 
 ```ts
-import type { KeyPair, Encrypted } from "encloom/helpers/types";
+import type { KeyPair, Encrypted, Pbkdf2Result } from "encloom/helpers/types";
 ```

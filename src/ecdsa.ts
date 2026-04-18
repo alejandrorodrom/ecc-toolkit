@@ -2,7 +2,6 @@ import { hmac } from "@noble/hashes/hmac.js";
 import { sha256 } from "@noble/hashes/sha2.js";
 import * as secp from "@noble/secp256k1";
 import { derDecodeEcdsaSignature, derEncodeEcdsaSignature } from "./internal/der";
-import { bufferToHex } from "./helpers/encoding";
 import type { KeyPair } from "./helpers/types";
 import {
   isCompressed,
@@ -140,14 +139,13 @@ export function recover(
  * @param publicKey Public key bytes.
  * @param msg Message digest bytes.
  * @param sig Signature bytes in DER, compact, or recovered format.
- * @returns Null when signature is valid.
  * @throws Error when signature is invalid.
  */
 export function verify(
   publicKey: Uint8Array,
   msg: Uint8Array,
   sig: Uint8Array
-): null {
+): void {
   checkPublicKey(publicKey);
   checkMessage(msg);
   let sigBytes = sig;
@@ -162,8 +160,7 @@ export function verify(
     format,
     lowS: false,
   });
-  if (ok) {
-    return null;
+  if (!ok) {
+    throw new Error("Bad signature");
   }
-  throw new Error("Bad signature");
 }

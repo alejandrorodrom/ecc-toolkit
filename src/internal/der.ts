@@ -1,10 +1,5 @@
 import { concatBuffers } from "../helpers/encoding";
 
-/**
- * Decodes a DER-encoded ECDSA signature into compact r||s format.
- * @param der DER-encoded signature bytes.
- * @returns Compact signature bytes (64 bytes).
- */
 export function derDecodeEcdsaSignature(der: Uint8Array): Uint8Array {
   if (der.length < 8 || der[0] !== 0x30) {
     throw new Error("Invalid DER signature");
@@ -22,12 +17,6 @@ export function derDecodeEcdsaSignature(der: Uint8Array): Uint8Array {
   return concatBuffers(pad32(r.value), pad32(s.value));
 }
 
-/**
- * Reads an ASN.1 length field.
- * @param der DER byte array.
- * @param start Offset where the length field starts.
- * @returns Parsed length value and next offset.
- */
 function readAsn1Length(
   der: Uint8Array,
   start: number
@@ -44,13 +33,6 @@ function readAsn1Length(
   return { value: b, next: start + 1 };
 }
 
-/**
- * Reads a DER INTEGER value.
- * @param der DER byte array.
- * @param start Offset where INTEGER tag starts.
- * @param end End offset limit.
- * @returns INTEGER bytes and next offset.
- */
 function readInteger(
   der: Uint8Array,
   start: number,
@@ -71,11 +53,6 @@ function readInteger(
   return { value: v, next: valueEnd };
 }
 
-/**
- * Left-pads a byte array to 32 bytes.
- * @param b Input byte array.
- * @returns 32-byte array.
- */
 function pad32(b: Uint8Array): Uint8Array {
   if (b.length === 32) {
     return b;
@@ -88,11 +65,23 @@ function pad32(b: Uint8Array): Uint8Array {
   return out;
 }
 
-/**
- * Encodes a compact ECDSA signature into DER format.
- * @param rs Compact signature bytes (64 bytes).
- * @returns DER-encoded signature bytes.
- */
+function encodeDerDefiniteLength(len: number): Uint8Array {
+  if (len < 0x80) {
+    return new Uint8Array([len]);
+  }
+  const bytes: number[] = [];
+  let n = len;
+  while (n > 0) {
+    bytes.push(n & 0xff);
+    n >>>= 8;
+  }
+  bytes.reverse();
+  const out = new Uint8Array(1 + bytes.length);
+  out[0] = 0x80 | bytes.length;
+  out.set(bytes, 1);
+  return out;
+}
+
 export function derEncodeEcdsaSignature(rs: Uint8Array): Uint8Array {
   if (rs.length !== 64) {
     throw new Error("Expected 64 compact bytes");
@@ -100,14 +89,10 @@ export function derEncodeEcdsaSignature(rs: Uint8Array): Uint8Array {
   const r = encodeInteger(rs.slice(0, 32));
   const s = encodeInteger(rs.slice(32, 64));
   const seq = concatBuffers(r, s);
-  return concatBuffers(new Uint8Array([0x30, seq.length]), seq);
+  const seqLen = encodeDerDefiniteLength(seq.length);
+  return concatBuffers(new Uint8Array([0x30]), seqLen, seq);
 }
 
-/**
- * Encodes an integer byte array as DER INTEGER.
- * @param bytes Integer bytes.
- * @returns DER INTEGER bytes.
- */
 function encodeInteger(bytes: Uint8Array): Uint8Array {
   let b = stripLeadingZeros(bytes);
   if (b.length === 0) {
@@ -119,11 +104,6 @@ function encodeInteger(bytes: Uint8Array): Uint8Array {
   return concatBuffers(new Uint8Array([0x02, b.length]), b);
 }
 
-/**
- * Removes leading zero bytes while preserving one byte for zero.
- * @param bytes Input bytes.
- * @returns Normalized byte array without unnecessary leading zeros.
- */
 function stripLeadingZeros(bytes: Uint8Array): Uint8Array {
   let i = 0;
   while (i < bytes.length - 1 && bytes[i] === 0) {

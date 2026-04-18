@@ -73,7 +73,11 @@ export function hexToBuffer(hex: string): Uint8Array {
   }
   const out = new Uint8Array(clean.length / 2);
   for (let i = 0; i < out.length; i++) {
-    out[i] = Number.parseInt(clean.slice(i * 2, i * 2 + 2), 16);
+    const byte = Number.parseInt(clean.slice(i * 2, i * 2 + 2), 16);
+    if (!Number.isFinite(byte) || byte < 0 || byte > 255) {
+      throw new Error("hexToBuffer: invalid hex character");
+    }
+    out[i] = byte;
   }
   return out;
 }

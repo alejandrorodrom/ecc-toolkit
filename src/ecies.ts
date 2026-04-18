@@ -22,6 +22,7 @@ import {
 import { randomBytes } from "./random";
 import { sha512, sha512Sync } from "./internal/sha512";
 import {
+  ERROR_BAD_EPHEM_PRIVATE_KEY,
   ERROR_BAD_MAC,
   IV_LENGTH,
   KEY_LENGTH,
@@ -92,11 +93,16 @@ function getEciesKeysSync(privateKey: Uint8Array, publicKey: Uint8Array) {
  * @returns Ephemeral private and public key bytes.
  */
 function getEphemKeyPair(opts?: Partial<PreEncryptOpts>) {
-  let ephemPrivateKey =
-    opts?.ephemPrivateKey ?? randomBytes(KEY_LENGTH);
+  const fixed = opts?.ephemPrivateKey;
+  if (fixed !== undefined) {
+    if (!isValidPrivateKey(fixed)) {
+      throw new Error(ERROR_BAD_EPHEM_PRIVATE_KEY);
+    }
+    return { ephemPrivateKey: fixed, ephemPublicKey: getPublic(fixed) };
+  }
+  let ephemPrivateKey = randomBytes(KEY_LENGTH);
   while (!isValidPrivateKey(ephemPrivateKey)) {
-    ephemPrivateKey =
-      opts?.ephemPrivateKey ?? randomBytes(KEY_LENGTH);
+    ephemPrivateKey = randomBytes(KEY_LENGTH);
   }
   const ephemPublicKey = getPublic(ephemPrivateKey);
   return { ephemPrivateKey, ephemPublicKey };
@@ -177,10 +183,10 @@ export function encryptSync(
  * @param opts Encrypted payload.
  * @returns Decrypted plaintext bytes.
  */
-export async function decryptSync(
+export function decryptSync(
   privateKey: Uint8Array,
   opts: Encrypted
-): Promise<Uint8Array> {
+): Uint8Array {
   const { ephemPublicKey, iv, mac, ciphertext } = opts;
   const { encryptionKey, macKey } = getEciesKeysSync(
     privateKey,

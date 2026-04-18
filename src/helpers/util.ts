@@ -106,7 +106,7 @@ export function joinSignature(sig: Signature): Uint8Array {
  * @returns True when signature appears DER-encoded.
  */
 export function isValidDERSignature(sig: Uint8Array): boolean {
-  return bufferToHex(sig).startsWith("30") && sig.length > 65;
+  return sig.length > 65 && sig[0] === 0x30;
 }
 
 export interface SignResult {
