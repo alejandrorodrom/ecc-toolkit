@@ -1,10 +1,8 @@
 # encloom
 
-**Encloom** is a TypeScript/JavaScript cryptographic toolkit with **subpath imports** and **tree-shaking**. It includes **SHA-2** and **SHA-3** (including Keccak), **HMAC**, **AES-256-CBC**, **PBKDF2**, cryptographically secure **random** bytes, **secp256k1** primitives (**ECDSA**, **ECDH**, **ECIES**), and helpers for **bytes** and **strings**.
+[![npm version](https://img.shields.io/npm/v/encloom.svg)](https://www.npmjs.com/package/encloom) [![npm downloads](https://img.shields.io/npm/dm/encloom.svg)](https://www.npmjs.com/package/encloom) [![minzipped size](https://img.shields.io/bundlephobia/minzip/encloom?label=minzipped%20size)](https://bundlephobia.com/package/encloom) [![install size](https://packagephobia.com/badge?p=encloom)](https://packagephobia.com/result?p=encloom) [![License: MIT](https://img.shields.io/npm/l/encloom.svg)](https://github.com/alejandrorodrom/encloom/blob/main/LICENSE) [![GitHub stars](https://img.shields.io/github/stars/alejandrorodrom/encloom.svg)](https://github.com/alejandrorodrom/encloom/stargazers) [![CI](https://github.com/alejandrorodrom/encloom/actions/workflows/ci.yml/badge.svg)](https://github.com/alejandrorodrom/encloom/actions/workflows/ci.yml) [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/) [![Node](https://img.shields.io/badge/node-%3E%3D20.19.0-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
 
-<h2 id="sec-requirements">Requirements</h2>
-
-- **Node.js** 20.19 or later.
+> TypeScript/JavaScript cryptographic toolkit: SHA-2 and SHA-3 (incl. Keccak), HMAC, AES-CBC, PBKDF2, secure random, and secp256k1 (ECDSA, ECDH, ECIES). Subpath exports with tree-shaking; APIs use Uint8Array.
 
 <h2 id="sec-installation">Installation</h2>
 
@@ -18,7 +16,6 @@ The package exposes subpath entry points (`encloom/<module>`). Importing from **
 
 <h2 id="sec-contents">Table of contents</h2>
 
-- [Requirements](#sec-requirements)
 - [Installation](#sec-installation)
 - [Overview](#sec-description)
 - [Quick reference](#sec-reference)
