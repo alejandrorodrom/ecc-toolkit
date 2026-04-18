@@ -1,6 +1,6 @@
 {
   "name": "encloom",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "TypeScript/JavaScript cryptographic toolkit: SHA-2 and SHA-3 (incl. Keccak), HMAC, AES-CBC, PBKDF2, secure random, and secp256k1 (ECDSA, ECDH, ECIES). Subpath exports with tree-shaking; APIs use Uint8Array.",
   "engines": {
     "node": ">=20.19.0"
@@ -173,6 +173,7 @@
   },
   "scripts": {
     "build": "tsup",
+    "prepack": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -190,8 +191,19 @@
     "sha3",
     "tree-shaking"
   ],
-  "author": "Alejandro Rodriguez Romero",
+  "author": {
+    "name": "Alejandro Rodriguez Romero",
+    "url": "https://github.com/alejandrorodrom"
+  },
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alejandrorodrom/encloom.git"
+  },
+  "bugs": {
+    "url": "https://github.com/alejandrorodrom/encloom/issues"
+  },
+  "homepage": "https://github.com/alejandrorodrom/encloom#readme",
   "files": [
     "dist",
     "README.md",
