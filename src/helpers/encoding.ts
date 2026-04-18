@@ -1,7 +1,7 @@
 import {
   HEX_ENC,
   LENGTH_0,
-  UTF8_ENC,
+  type UTF8_ENC,
 } from "../constants";
 
 const textEncoder = new TextEncoder();
@@ -55,8 +55,8 @@ export function bufferToHex(
     throw new Error("bufferToHex: only hex encoding is supported");
   }
   let hex = "";
-  for (let i = 0; i < buf.length; i++) {
-    hex += buf[i]!.toString(16).padStart(2, "0");
+  for (const byte of buf) {
+    hex += byte.toString(16).padStart(2, "0");
   }
   return hex;
 }

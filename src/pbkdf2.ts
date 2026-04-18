@@ -18,7 +18,16 @@ export type { Pbkdf2Digest, Pbkdf2Options, Pbkdf2Result } from "./helpers/types"
 
 const pbkdf2Node = pbkdf2Module.pbkdf2;
 
-/** PBKDF2-HMAC-SHA-256/512 → 32-byte key; default salt and iterations unless overridden. */
+/**
+ * Derives a 32-byte key from a password using PBKDF2 with HMAC-SHA-256 or HMAC-SHA-512.
+ *
+ * If `options` is omitted, a random 16-byte salt is generated, iterations default to
+ * `PBKDF2_DEFAULT_ITERATIONS`, and the PRF is HMAC-SHA-256.
+ *
+ * @param password Password material as raw bytes (encoding is up to the caller).
+ * @param options Optional salt, iteration count, and digest algorithm.
+ * @returns Derived key and the salt, iterations, and digest that were used.
+ */
 export async function pbkdf2(
   password: Uint8Array,
   options?: Pbkdf2Options
@@ -42,16 +51,16 @@ export async function pbkdf2(
       KEY_LENGTH,
       digestNode,
       (err: Error | null, derived?: Buffer) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve({
-            key: new Uint8Array(derived!),
-            salt,
-            iterations,
-            digest,
-          });
+        if (err) return reject(err);
+        if (derived === undefined) {
+          return reject(new Error("PBKDF2: no derived key"));
         }
+        resolve({
+          key: new Uint8Array(derived),
+          salt,
+          iterations,
+          digest,
+        });
       }
     );
   });

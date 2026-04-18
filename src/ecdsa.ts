@@ -173,7 +173,8 @@ export function verify(
   let format: "compact" | "recovered" = "compact";
   if (sig[0] === 0x30) {
     sigBytes = derDecodeEcdsaSignature(sig);
-  } else if (sig.length === 65) {
+  }
+  if (sig[0] !== 0x30 && sig.length === 65) {
     format = "recovered";
   }
   const ok = secp.verify(sigBytes, msg, publicKey, {
@@ -181,7 +182,5 @@ export function verify(
     format,
     lowS: false,
   });
-  if (!ok) {
-    throw new Error(ERROR_BAD_SIGNATURE);
-  }
+  if (!ok) throw new Error(ERROR_BAD_SIGNATURE);
 }

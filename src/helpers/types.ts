@@ -1,4 +1,4 @@
-import {
+import type {
   PBKDF2_DIGEST_SHA256,
   PBKDF2_DIGEST_SHA512,
 } from "../constants";

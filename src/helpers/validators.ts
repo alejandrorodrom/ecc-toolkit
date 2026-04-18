@@ -78,7 +78,7 @@ export function equalConstTime(b1: Uint8Array, b2: Uint8Array): boolean {
   }
   let res = 0;
   for (let i = 0; i < b1.length; i++) {
-    res |= b1[i]! ^ b2[i]!;
+    res |= b1[i] ^ b2[i];
   }
   return res === 0;
 }

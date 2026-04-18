@@ -173,6 +173,8 @@
   },
   "scripts": {
     "build": "node scripts/build.mjs",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "prepack": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -210,10 +212,14 @@
     "LICENSE"
   ],
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/aes-js": "^3.1.4",
     "@types/pbkdf2": "^3.1.2",
     "esbuild": "^0.25.0",
-    "typescript": "^6.0.3"
+    "eslint": "^10.2.1",
+    "globals": "^17.5.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.58.2"
   },
   "dependencies": {
     "@noble/hashes": "^2.2.0",

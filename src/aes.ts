@@ -9,12 +9,7 @@ import {
 const { ModeOfOperation } = aesJs;
 
 function bytesToAesNumberArray(buf: Uint8Array): number[] {
-  const len = buf.length;
-  const out = new Array<number>(len);
-  for (let i = 0; i < len; i++) {
-    out[i] = buf[i]!;
-  }
-  return out;
+  return Array.from(buf);
 }
 
 function assertAesLengths(iv: Uint8Array, key: Uint8Array): void {
@@ -119,10 +114,12 @@ function pkcs7Pad(data: Uint8Array, blockSize: number): Uint8Array {
  * @throws Error if padding is invalid.
  */
 function pkcs7Unpad(data: Uint8Array, blockSize: number): Uint8Array {
-  if (data.length === 0) {
+  const padByte =
+    data.length === 0 ? undefined : data[data.length - 1];
+  if (padByte === undefined) {
     throw new Error("PKCS#7: empty data");
   }
-  const pad = data[data.length - 1]!;
+  const pad = padByte;
   if (pad < 1 || pad > blockSize || pad > data.length) {
     throw new Error("PKCS#7: invalid padding");
   }
