@@ -13,19 +13,63 @@ import {
   encryptObjectAes128GcmJsonHex,
 } from "../src/aes-gcm.js";
 import {
+  AES_GCM_ENVELOPE_NONCE_MAX_LENGTH,
   AES_GCM_NONCE_LENGTH,
   AES_GCM_TAG_LENGTH,
   ERROR_AES_GCM_CIPHERTEXT_LENGTH,
   ERROR_AES_GCM_KEY_LENGTH,
   ERROR_AES_GCM_NONCE_LENGTH,
 } from "../src/constants.js";
-import { aes128StringKeyMaterial, base64ToBuffer, bufferToBase64 } from "../src/helpers/encoding.js";
+import {
+  aes128StringKeyMaterial,
+  base64ToBuffer,
+  base64UrlToBuffer,
+  bufferToBase64,
+} from "../src/helpers/encoding.js";
 
 describe("aes-gcm", () => {
   it("round-trips encryptJsonAes256GcmSync / decryptJsonAes256GcmSync", () => {
     const obj = { n: 1, s: "hola" };
     const wire = encryptJsonAes256GcmSync(obj);
     expect(decryptJsonAes256GcmSync(wire) as typeof obj).toEqual(obj);
+    expect(base64ToBuffer(wire.iv).length).toBe(AES_GCM_NONCE_LENGTH);
+  });
+
+  it("encryptJsonAes256GcmSync(..., 64) round-trips with decryptJsonAes256GcmSync", () => {
+    const obj = { legacy: true };
+    const wire = encryptJsonAes256GcmSync(obj, 64);
+    expect(base64ToBuffer(wire.iv).length).toBe(64);
+    expect(decryptJsonAes256GcmSync(wire) as typeof obj).toEqual(obj);
+  });
+
+  it("encryptJsonAes256GcmSync rejects nonce length out of range", () => {
+    expect(() => encryptJsonAes256GcmSync({}, 7)).toThrow(
+      /encryptJsonAes256GcmSync/,
+    );
+    expect(() =>
+      encryptJsonAes256GcmSync({}, AES_GCM_ENVELOPE_NONCE_MAX_LENGTH + 1),
+    ).toThrow(/encryptJsonAes256GcmSync/);
+  });
+
+  it("64-byte nonce wire interoperates with Web Crypto decrypt", async () => {
+    const payload = { x: 1 };
+    const wire = encryptJsonAes256GcmSync(payload, 64);
+    const iv = base64ToBuffer(wire.iv);
+    const key = base64UrlToBuffer(wire.key);
+    const ciphertext = base64ToBuffer(wire.stream);
+    const subtleKey = await webcrypto.subtle.importKey(
+      "raw",
+      key,
+      { name: "AES-GCM" },
+      false,
+      ["decrypt"],
+    );
+    const pt = await webcrypto.subtle.decrypt(
+      { name: "AES-GCM", iv, tagLength: 128 },
+      subtleKey,
+      ciphertext,
+    );
+    expect(JSON.parse(new TextDecoder().decode(pt))).toEqual(payload);
   });
 
   it("round-trips encryptObjectAes128GcmJsonHex with ASCII passphrase", () => {

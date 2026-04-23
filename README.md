@@ -77,7 +77,7 @@ Symbols exported per import path (types compile-time only). First column → [Mo
 
 <h4 id="mod-constants-list">Exported constants</h4>
 
-`HEX_ENC`, `UTF8_ENC`, `BINARY_ENC`, `ENCRYPT_OP`, `DECRYPT_OP`, `SIGN_OP`, `VERIFY_OP`, `LENGTH_0`, `LENGTH_1`, `LENGTH_12`, `LENGTH_16`, `LENGTH_32`, `LENGTH_64`, `LENGTH_128`, `LENGTH_256`, `LENGTH_512`, `LENGTH_1024`, `AES_LENGTH`, `HMAC_LENGTH`, `AES_BROWSER_ALGO`, `HMAC_BROWSER_ALGO`, `HMAC_BROWSER`, `SHA256_BROWSER_ALGO`, `SHA512_BROWSER_ALGO`, `AES_NODE_ALGO`, `HMAC_NODE_ALGO`, `SHA256_NODE_ALGO`, `SHA512_NODE_ALGO`, `RIPEMD160_NODE_ALGO`, `PBKDF2_DIGEST_SHA256`, `PBKDF2_DIGEST_SHA512`, `PREFIX_LENGTH`, `KEY_LENGTH`, `IV_LENGTH`, `AES_GCM_NONCE_LENGTH`, `AES_GCM_TAG_LENGTH`, `MAC_LENGTH`, `DECOMPRESSED_LENGTH`, `PREFIXED_KEY_LENGTH`, `PREFIXED_DECOMPRESSED_LENGTH`, `ECIES_SERIALIZED_MIN_LENGTH`, `MAX_KEY_LENGTH`, `MAX_MSG_LENGTH`, `PBKDF2_DEFAULT_ITERATIONS`, `EMPTY_BUFFER`, `EC_GROUP_ORDER`, `ZERO32`, `ERROR_BAD_MAC`, `ERROR_BAD_SIGNATURE`, `ERROR_BAD_PRIVATE_KEY`, `ERROR_BAD_PUBLIC_KEY`, `ERROR_BAD_EPHEM_PRIVATE_KEY`, `ERROR_ECIES_SERIALIZED_LENGTH`, `ERROR_AES_IV_LENGTH`, `ERROR_AES_KEY_LENGTH`, `ERROR_AES_GCM_KEY_LENGTH`, `ERROR_AES_GCM_NONCE_LENGTH`, `ERROR_AES_GCM_CIPHERTEXT_LENGTH`, `ERROR_EMPTY_MESSAGE`, `ERROR_MESSAGE_TOO_LONG`
+`HEX_ENC`, `UTF8_ENC`, `BINARY_ENC`, `ENCRYPT_OP`, `DECRYPT_OP`, `SIGN_OP`, `VERIFY_OP`, `LENGTH_0`, `LENGTH_1`, `LENGTH_12`, `LENGTH_16`, `LENGTH_32`, `LENGTH_64`, `LENGTH_128`, `LENGTH_256`, `LENGTH_512`, `LENGTH_1024`, `AES_LENGTH`, `HMAC_LENGTH`, `AES_BROWSER_ALGO`, `HMAC_BROWSER_ALGO`, `HMAC_BROWSER`, `SHA256_BROWSER_ALGO`, `SHA512_BROWSER_ALGO`, `AES_NODE_ALGO`, `HMAC_NODE_ALGO`, `SHA256_NODE_ALGO`, `SHA512_NODE_ALGO`, `RIPEMD160_NODE_ALGO`, `PBKDF2_DIGEST_SHA256`, `PBKDF2_DIGEST_SHA512`, `PREFIX_LENGTH`, `KEY_LENGTH`, `IV_LENGTH`, `AES_GCM_NONCE_LENGTH`, `AES_GCM_ENVELOPE_NONCE_MAX_LENGTH`, `AES_GCM_TAG_LENGTH`, `MAC_LENGTH`, `DECOMPRESSED_LENGTH`, `PREFIXED_KEY_LENGTH`, `PREFIXED_DECOMPRESSED_LENGTH`, `ECIES_SERIALIZED_MIN_LENGTH`, `MAX_KEY_LENGTH`, `MAX_MSG_LENGTH`, `PBKDF2_DEFAULT_ITERATIONS`, `EMPTY_BUFFER`, `EC_GROUP_ORDER`, `ZERO32`, `ERROR_BAD_MAC`, `ERROR_BAD_SIGNATURE`, `ERROR_BAD_PRIVATE_KEY`, `ERROR_BAD_PUBLIC_KEY`, `ERROR_BAD_EPHEM_PRIVATE_KEY`, `ERROR_ECIES_SERIALIZED_LENGTH`, `ERROR_AES_IV_LENGTH`, `ERROR_AES_KEY_LENGTH`, `ERROR_AES_GCM_KEY_LENGTH`, `ERROR_AES_GCM_NONCE_LENGTH`, `ERROR_AES_GCM_CIPHERTEXT_LENGTH`, `ERROR_EMPTY_MESSAGE`, `ERROR_MESSAGE_TOO_LONG`
 
 ---
 
@@ -260,14 +260,14 @@ const pt = await aesCbcDecrypt(iv, key, ct);
 
 <h3 id="mod-encloom-aes-gcm"><code>encloom/aes-gcm</code></h3>
 
-**Description.** **AES-GCM** (128-bit tag) via `@noble/ciphers`, Web Crypto–compatible layout (`ciphertext || tag`). Low-level helpers take raw keys (16 / 24 / 32 octets) and nonce (≥ 8 octets; **12** recommended, see `AES_GCM_NONCE_LENGTH`). High-level helpers cover JSON + passphrase (AES-128, hex wire) and JSON + random AES-256 key (Base64 / Base64url envelope).
+**Description.** **AES-GCM** (128-bit tag) via `@noble/ciphers`, Web Crypto–compatible layout (`ciphertext || tag`). Low-level helpers take raw keys (16 / 24 / 32 octets) and nonce (≥ 8 octets; **12** recommended, see `AES_GCM_NONCE_LENGTH`). High-level helpers cover JSON + passphrase (AES-128, hex wire) and JSON + random AES-256 key (Base64 / Base64url envelope). For that JSON envelope, the default random nonce length is **`AES_GCM_NONCE_LENGTH`**; you may pass a larger **`nonceByteLength`** (up to **`AES_GCM_ENVELOPE_NONCE_MAX_LENGTH`**) as the optional second argument to **`encryptJsonAes256GcmSync`** / **`encryptJsonAes256Gcm`** when you need to match an existing wire with a longer `iv`.
 
 | Function | Summary |
 |----------|---------|
 | `aesGcmEncrypt` / `aesGcmEncryptSync` | `nonce`, `key`, `plaintext`, optional `aad` → ciphertext with tag |
 | `aesGcmDecrypt` / `aesGcmDecryptSync` | `nonce`, `key`, `ciphertext` (+ optional `aad`) → plaintext |
 | `encryptObjectAes128GcmJsonHex` / `decryptObjectAes128GcmJsonHex` | JSON + passphrase → lowercase hex (12-byte nonce, then ciphertext and 128-bit tag); decrypt returns `unknown` |
-| `encryptJsonAes256Gcm` / `encryptJsonAes256GcmSync` | JSON + random key → `AesGcmJsonWire` |
+| `encryptJsonAes256Gcm` / `encryptJsonAes256GcmSync` | JSON + random key → `AesGcmJsonWire`; optional **`nonceByteLength`** (default **`AES_GCM_NONCE_LENGTH`**, max **`AES_GCM_ENVELOPE_NONCE_MAX_LENGTH`**) |
 | `decryptJsonAes256Gcm` / `decryptJsonAes256GcmSync` | `AesGcmJsonWire` → parsed JSON (`unknown`) |
 
 **Examples**
@@ -308,6 +308,10 @@ import {
 
 const wire = encryptJsonAes256GcmSync({ user: "ana", n: 42 });
 const out = decryptJsonAes256GcmSync(wire) as { user: string; n: number };
+
+// Same wire shape; optional second argument = random nonce length in octets (e.g. 64)
+const wireLongNonce = encryptJsonAes256GcmSync({ user: "ana", n: 42 }, 64);
+decryptJsonAes256GcmSync(wireLongNonce) as { user: string; n: number };
 ```
 
 JSON + passphrase, AES-128, hex wire (passphrase must satisfy `aes128StringKeyMaterial`, typically ≤16 ASCII chars):
@@ -388,6 +392,9 @@ import { encryptJsonAes256Gcm, decryptJsonAes256Gcm } from "encloom/aes-gcm";
 
 const wire = await encryptJsonAes256Gcm({ x: 1 });
 const data = (await decryptJsonAes256Gcm(wire)) as { x: number };
+
+const wireLong = await encryptJsonAes256Gcm({ x: 1 }, 64);
+await decryptJsonAes256Gcm(wireLong);
 ```
 
 <h3 id="mod-encloom-ecdsa"><code>encloom/ecdsa</code></h3>

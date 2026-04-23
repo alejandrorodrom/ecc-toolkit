@@ -5,6 +5,18 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.1] - 2026-04-23
+
+### Added
+
+- **`AES_GCM_ENVELOPE_NONCE_MAX_LENGTH`** in **`encloom/constants`**: maximum allowed random nonce length (octets) for the JSON AES-256-GCM envelope helpers.
+- **`encryptJsonAes256GcmSync` / `encryptJsonAes256Gcm`:** optional second argument **`nonceByteLength`** (defaults to **`AES_GCM_NONCE_LENGTH`**). Use when you need a longer random IV in `wire.iv` (for example 64) while keeping the same `AesGcmJsonWire` shape. **`decryptJsonAes256GcmSync` / `decryptJsonAes256Gcm`** are unchanged and already accept any supported nonce length present in `wire.iv`.
+
+### Documentation
+
+- **README:** constants list, AES-GCM module table, and JSON envelope examples for optional `nonceByteLength`.
+- **JSDoc** (`aes-gcm`): tightened `@param` / `@returns` / `@throws` on JSON envelope and decrypt helpers.
+
 ## [2.0.0] - 2026-04-23
 
 ### Breaking changes

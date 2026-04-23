@@ -45,6 +45,7 @@ export const PREFIX_LENGTH = LENGTH_1;
 export const KEY_LENGTH = LENGTH_32;
 export const IV_LENGTH = LENGTH_16;
 export const AES_GCM_NONCE_LENGTH = LENGTH_12;
+export const AES_GCM_ENVELOPE_NONCE_MAX_LENGTH = LENGTH_128;
 export const AES_GCM_TAG_LENGTH = LENGTH_16;
 export const MAC_LENGTH = LENGTH_32;
 export const DECOMPRESSED_LENGTH = LENGTH_64;

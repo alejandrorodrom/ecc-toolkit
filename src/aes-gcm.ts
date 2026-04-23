@@ -1,5 +1,6 @@
 import { gcm } from "@noble/ciphers/aes.js";
 import {
+  AES_GCM_ENVELOPE_NONCE_MAX_LENGTH,
   AES_GCM_NONCE_LENGTH,
   AES_GCM_TAG_LENGTH,
   ERROR_AES_GCM_CIPHERTEXT_LENGTH,
@@ -40,6 +41,18 @@ function assertAesGcmNonce(nonce: Uint8Array): void {
 function assertAesGcmCiphertext(ct: Uint8Array): void {
   if (ct.length <= AES_GCM_TAG_LENGTH) {
     throw new Error(ERROR_AES_GCM_CIPHERTEXT_LENGTH);
+  }
+}
+
+function assertEnvelopeNonceByteLength(n: number): void {
+  if (
+    !Number.isInteger(n) ||
+    n < MIN_NONCE_BYTES ||
+    n > AES_GCM_ENVELOPE_NONCE_MAX_LENGTH
+  ) {
+    throw new Error(
+      `encryptJsonAes256GcmSync: nonceByteLength must be an integer from ${MIN_NONCE_BYTES} to ${AES_GCM_ENVELOPE_NONCE_MAX_LENGTH}`,
+    );
   }
 }
 
@@ -131,7 +144,7 @@ export function aesGcmDecryptSync(
  * {@link AES_GCM_NONCE_LENGTH}-byte nonce per call. Returns lowercase hex: `nonce || ct||tag`.
  *
  * @param data Any `JSON.stringify` input.
- * @param key Passphrase (see `aes128StringKeyMaterial` constraints).
+ * @param key Passphrase (see {@link aes128StringKeyMaterial} constraints).
  * @returns Lowercase hex wire string.
  * @throws {Error} Invalid key material or encrypt failure.
  */
@@ -150,7 +163,8 @@ export function encryptObjectAes128GcmJsonHex(data: unknown, key: string): strin
  * @param hex Wire from {@link encryptObjectAes128GcmJsonHex} (hex as accepted by {@link hexToBuffer}).
  * @param key Same passphrase as encrypt.
  * @returns Parsed JSON (`unknown`).
- * @throws {Error} Invalid input, auth failure, or invalid JSON.
+ * @throws {Error} Invalid input or auth failure.
+ * @throws {SyntaxError} Invalid JSON in plaintext after decrypt.
  */
 export function decryptObjectAes128GcmJsonHex(hex: string, key: string): unknown {
   const keyBytes = aes128StringKeyMaterial(key);
@@ -164,17 +178,10 @@ export function decryptObjectAes128GcmJsonHex(hex: string, key: string): unknown
   return JSON.parse(bufferToUtf8(pt));
 }
 
-/**
- * AES-256-GCM over `JSON.stringify(data)` with random 32-byte key and
- * {@link AES_GCM_NONCE_LENGTH}-byte nonce. Wire: {@link AesGcmJsonWire} — Base64 `iv`/`stream`,
- * unpadded Base64url `key` (JWK `k`-style).
- *
- * @param data Any `JSON.stringify` input.
- * @returns Serializable envelope.
- */
-export function encryptJsonAes256GcmSync(data: unknown): AesGcmJsonWire {
+function encryptJsonAes256GcmWireSync(data: unknown, nonceByteLength: number): AesGcmJsonWire {
+  assertEnvelopeNonceByteLength(nonceByteLength);
   const key = randomBytes(KEY_LENGTH);
-  const iv = randomBytes(AES_GCM_NONCE_LENGTH);
+  const iv = randomBytes(nonceByteLength);
   const pt = utf8ToBuffer(JSON.stringify(data));
   const ct = aesGcmEncryptSync(iv, key, pt);
   return {
@@ -184,18 +191,38 @@ export function encryptJsonAes256GcmSync(data: unknown): AesGcmJsonWire {
   };
 }
 
-/** Async wrapper for {@link encryptJsonAes256GcmSync}. */
-export async function encryptJsonAes256Gcm(data: unknown): Promise<AesGcmJsonWire> {
-  return encryptJsonAes256GcmSync(data);
+/**
+ * AES-256-GCM over `JSON.stringify(data)` with random 32-byte key. Wire: {@link AesGcmJsonWire}
+ * (Base64 `iv`/`stream`, unpadded Base64url `key`).
+ *
+ * @param data Any `JSON.stringify` input.
+ * @param nonceByteLength Nonce size in bytes; default {@link AES_GCM_NONCE_LENGTH} (8–{@link AES_GCM_ENVELOPE_NONCE_MAX_LENGTH}).
+ * @returns Serializable envelope.
+ * @throws {Error} Invalid `nonceByteLength`, key or nonce length, encrypt failure, or `JSON.stringify` failure.
+ */
+export function encryptJsonAes256GcmSync(
+  data: unknown,
+  nonceByteLength: number = AES_GCM_NONCE_LENGTH,
+): AesGcmJsonWire {
+  return encryptJsonAes256GcmWireSync(data, nonceByteLength);
+}
+
+/** Async {@link encryptJsonAes256GcmSync}. */
+export async function encryptJsonAes256Gcm(
+  data: unknown,
+  nonceByteLength: number = AES_GCM_NONCE_LENGTH,
+): Promise<AesGcmJsonWire> {
+  return encryptJsonAes256GcmSync(data, nonceByteLength);
 }
 
 /**
- * Decrypts {@link AesGcmJsonWire} from {@link encryptJsonAes256GcmSync} / {@link encryptJsonAes256Gcm}.
- * Verifies GCM tag, then `JSON.parse` on UTF-8 plaintext.
+ * Decrypts {@link AesGcmJsonWire} from {@link encryptJsonAes256GcmSync}. Verifies GCM tag, then
+ * `JSON.parse` on UTF-8 plaintext.
  *
- * @param wire Envelope strings.
+ * @param wire Envelope ({@link AesGcmJsonWire}).
  * @returns Parsed JSON (`unknown`).
- * @throws {Error} Bad encoding, lengths, auth, or JSON.
+ * @throws {Error} Bad encoding, lengths, or auth failure.
+ * @throws {SyntaxError} Invalid JSON in plaintext after decrypt.
  */
 export function decryptJsonAes256GcmSync(wire: AesGcmJsonWire): unknown {
   const iv = base64ToBuffer(wire.iv);
@@ -205,7 +232,7 @@ export function decryptJsonAes256GcmSync(wire: AesGcmJsonWire): unknown {
   return JSON.parse(bufferToUtf8(pt));
 }
 
-/** Async wrapper for {@link decryptJsonAes256GcmSync}. */
+/** Async {@link decryptJsonAes256GcmSync}. */
 export async function decryptJsonAes256Gcm(wire: AesGcmJsonWire): Promise<unknown> {
   return decryptJsonAes256GcmSync(wire);
 }
