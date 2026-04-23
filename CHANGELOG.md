@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **README:** constants list, AES-GCM module table, and JSON envelope examples for optional `nonceByteLength`.
 - **JSDoc** (`aes-gcm`): tightened `@param` / `@returns` / `@throws` on JSON envelope and decrypt helpers.
 
+### Fixed
+
+- **`verify` (`encloom/ecdsa`):** 64-byte compact signatures (`r||s`) whose first byte is **`0x30`** were mistaken for ASN.1 DER (same leading tag), causing **`Invalid DER length encoding`**. Detection now treats **exactly 64 bytes** as compact before attempting DER decode. Regression test added in **`tests/ecdsa.test.ts`**.
+
 ## [2.0.0] - 2026-04-23
 
 ### Breaking changes

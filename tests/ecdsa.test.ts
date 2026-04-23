@@ -72,6 +72,17 @@ describe("ecdsa", () => {
     }).not.toThrow();
   });
 
+  it("64-byte compact is never parsed as DER (r[0] may be 0x30)", () => {
+    const { publicKey } = generateKeyPair();
+    const msg = sha256Sync(utf8ToBuffer("probe"));
+    const bogus = new Uint8Array(64);
+    bogus[0] = 0x30;
+    bogus.fill(0xab, 1);
+    expect(() => {
+      verify(publicKey, msg, bogus);
+    }).toThrow("Bad signature");
+  });
+
   it("DER signature from signatureExport verifies", () => {
     const { privateKey, publicKey } = generateKeyPair();
     const msg = sha256Sync(new Uint8Array([0]));

@@ -163,14 +163,20 @@ export function verify(
 ): void {
   checkPublicKey(publicKey);
   checkMessage(msg);
-  let sigBytes = sig;
-  let format: "compact" | "recovered" = "compact";
-  if (sig[0] === 0x30) {
+
+  let sigBytes: Uint8Array;
+  let format: "compact" | "recovered";
+  if (sig.length === 64) {
+    sigBytes = sig;
+    format = "compact";
+  } else if (sig[0] === 0x30) {
     sigBytes = derDecodeEcdsaSignature(sig);
+    format = "compact";
+  } else {
+    sigBytes = sig;
+    format = sig.length === 65 ? "recovered" : "compact";
   }
-  if (sig[0] !== 0x30 && sig.length === 65) {
-    format = "recovered";
-  }
+
   const ok = secp.verify(sigBytes, msg, publicKey, {
     prehash: false,
     format,
