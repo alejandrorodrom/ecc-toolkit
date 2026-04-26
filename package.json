@@ -1,6 +1,6 @@
 {
   "name": "encloom",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "TypeScript/JavaScript cryptographic toolkit: SHA-2 and SHA-3 (incl. Keccak), HMAC, AES-CBC, AES-GCM, PBKDF2, secure random, and secp256k1 (ECDSA, ECDH, ECIES). Subpath exports with tree-shaking; APIs use Uint8Array.",
   "engines": {
     "node": ">=20.19.0"
